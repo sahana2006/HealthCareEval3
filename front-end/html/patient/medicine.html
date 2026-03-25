@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Medicines</title>
+
+  <link rel="stylesheet" href="../../css/pages/patient/medicine.css">
+
+  <!-- ICON LIBRARY -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header class="topbar">
+  <div class="topbar-left">
+    <h2>Medicines</h2>
+    <p>Patient Portal</p>
+  </div>
+
+  <div class="topbar-right">
+    <i data-lucide="bell"></i>
+    <div class="user">
+      <i data-lucide="user"></i>
+      <span>Patient XYZ</span>
+    </div>
+  </div>
+</header>
+
+<!-- CONTENT -->
+<main class="content">
+
+  <!-- SEARCH -->
+  <section class="search-banner">
+    <h2>Buy Medicines and Essentials</h2>
+
+    <div class="search-box">
+      <i data-lucide="search"></i>
+      <input type="text" placeholder="Search Medicines">
+    </div>
+  </section>
+
+  <!-- CONDITIONS -->
+  <section class="conditions">
+    <div class="section-header">
+      <h3>Browse by Health Conditions</h3>
+      <a href="#">View All</a>
+    </div>
+
+    <div class="condition-grid">
+
+      <div class="condition-card"><i data-lucide="heart"></i> Cardiac Care</div>
+      <div class="condition-card"><i data-lucide="activity"></i> Diabetes Care</div>
+      <div class="condition-card"><i data-lucide="stethoscope"></i> Stomach Care</div>
+      <div class="condition-card"><i data-lucide="zap"></i> Pain Relief</div>
+      <div class="condition-card"><i data-lucide="smile"></i> Oral Care</div>
+      <div class="condition-card"><i data-lucide="wind"></i> Respiratory</div>
+      <div class="condition-card"><i data-lucide="users"></i> Sexual Health</div>
+      <div class="condition-card"><i data-lucide="shield"></i> Cold & Immunity</div>
+      <div class="condition-card"><i data-lucide="droplet"></i> Liver Care</div>
+      <div class="condition-card"><i data-lucide="user"></i> Elderly Care</div>
+
+    </div>
+  </section>
+
+  <!-- ORDERS -->
+  <section class="orders">
+    <h3>Order History</h3>
+
+    <div class="order-card">
+      <div>
+        <p><strong>Order #ORD13-091</strong></p>
+        <span>February 25, 2026 - Total: ₹250</span>
+      </div>
+      <span class="status">Delivered</span>
+    </div>
+
+    <div class="order-card">
+      <div>
+        <p><strong>Order #ORD13-058</strong></p>
+        <span>January 15, 2026 - Total: ₹380</span>
+      </div>
+      <span class="status">Delivered</span>
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+  lucide.createIcons();
+</script>
+
+</body>
+</html>
