@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedBits – Treatment Plan</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .plan-grid { display: grid; grid-template-columns: 1fr 320px; gap: 20px; }
+
+    .plan-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .section-block {
+      padding: 20px 22px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .section-block:last-child { border-bottom: none; }
+
+    .section-block h3 {
+      font-size: 13px; font-weight: 700; color: var(--gray-700);
+      margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-block h3 .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+
+    .bullet-field {
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      padding: 10px 13px;
+      background: var(--white);
+      min-height: 70px;
+      font-size: 13.5px;
+      color: var(--gray-900);
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      width: 100%;
+      resize: none;
+      transition: border-color 0.15s;
+    }
+    .bullet-field:focus { border-color: var(--accent); }
+    .bullet-field::placeholder { color: var(--gray-300); }
+
+    /* Right panel */
+    .plan-summary {
+      display: flex; flex-direction: column; gap: 16px;
+    }
+
+    .summary-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .summary-card h4 {
+      font-size: 13px; font-weight: 700; color: var(--gray-700);
+      margin-bottom: 12px;
+    }
+
+    .med-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--gray-100);
+      font-size: 13px;
+    }
+    .med-item:last-child { border-bottom: none; }
+    .med-item .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+    .duration-select {
+      display: flex; gap: 8px;
+    }
+    .dur-btn {
+      flex: 1; padding: 8px 6px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      background: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px; font-weight: 600;
+      color: var(--gray-500);
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+    }
+    .dur-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .dur-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+    .save-bar {
+      position: sticky;
+      bottom: 0;
+      background: var(--white);
+      border-top: 1px solid var(--gray-200);
+      padding: 14px 22px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .tag-input-row { display: flex; gap: 8px; }
+    .tag-list-display { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .removable-tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--green-100);
+      color: var(--green-700);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px; font-weight: 500;
+    }
+    .removable-tag button {
+      background: none; border: none; cursor: pointer;
+      color: var(--green-600); font-size: 13px; line-height: 1; padding: 0;
+    }
+  </style>
+</head>
+<body>
+<aside class="sidebar" id="sidebar"></aside>
+
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-title">
+      <h1>Treatment Plan</h1>
+      <p>Doctor Portal</p>
+    </div>
+    <div class="topbar-right">
+      <button class="icon-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </button>
+      <div class="doctor-info">
+        <div class="avatar">SJ</div>
+        <div>
+          <div class="name">Dr. Sarah Johnson</div>
+          <div class="role">Doctor</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="content">
+    <!-- Patient selector -->
+    <div class="card" style="margin-bottom:20px;">
+      <label class="form-label">Select Patient</label>
+      <select class="form-select">
+        <option>PAT-001 Alpha Verma</option>
+        <option>PAT-002 Dev Patel</option>
+        <option>PAT-003 Nia Sharma</option>
+      </select>
+    </div>
+
+    <div class="plan-grid">
+      <!-- Main form -->
+      <div class="plan-card">
+        <div style="padding:18px 22px;background:var(--green-50);border-bottom:1px solid var(--green-100);">
+          <h2 style="font-size:14px;font-weight:700;color:var(--green-800);">Treatment Plan Documentation</h2>
+        </div>
+
+        <div class="section-block">
+          <h3><span class="dot"></span> Prescribed Medicine</h3>
+          <div class="tag-input-row">
+            <input class="form-input" id="medInput" placeholder="e.g., Amlodipine 5mg — once daily" onkeydown="if(event.key==='Enter')addMed()" />
+            <button class="btn btn-outline btn-sm" onclick="addMed()">Add</button>
+          </div>
+          <div class="tag-list-display" id="medList"></div>
+        </div>
+
+        <div class="section-block">
+          <h3><span class="dot"></span> Recommended Tests</h3>
+          <textarea class="bullet-field" placeholder="• List recommended tests and investigations..." id="tests"></textarea>
+        </div>
+
+        <div class="section-block">
+          <h3><span class="dot"></span> Lifestyle Recommendations</h3>
+          <textarea class="bullet-field" placeholder="• Exercise, sleep, stress management and diet details..." id="lifestyle"></textarea>
+        </div>
+
+        <div class="section-block">
+          <h3><span class="dot"></span> Diet Recommendations</h3>
+          <textarea class="bullet-field" placeholder="• Dietary advice and nutritional notes..." id="diet"></textarea>
+        </div>
+
+        <div class="section-block">
+          <h3><span class="dot"></span> Treatment Duration</h3>
+          <div class="duration-select" id="durationBtns">
+            <button class="dur-btn" onclick="selectDur(this,'1 Week')">1 Week</button>
+            <button class="dur-btn active" onclick="selectDur(this,'2 Weeks')">2 Weeks</button>
+            <button class="dur-btn" onclick="selectDur(this,'1 Month')">1 Month</button>
+            <button class="dur-btn" onclick="selectDur(this,'3 Months')">3 Months</button>
+          </div>
+          <input class="form-input" style="margin-top:10px;" placeholder="Or enter custom duration e.g., 6 weeks / 1 month" id="customDur" />
+        </div>
+
+        <div class="save-bar">
+          <button class="btn btn-outline btn-sm" style="margin-right:10px;" onclick="clearForm()">Clear</button>
+          <button class="btn btn-primary" onclick="savePlan()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Save Treatment Plan
+          </button>
+        </div>
+      </div>
+
+      <!-- Summary Panel -->
+      <div class="plan-summary">
+        <div class="summary-card">
+          <h4>📋 Plan Overview</h4>
+          <div style="font-size:12.5px;color:var(--gray-500);line-height:1.8;">
+            <div>Patient: <strong style="color:var(--gray-900);">Alpha Verma</strong></div>
+            <div>Date: <strong style="color:var(--gray-900);" id="planDate">—</strong></div>
+            <div>Duration: <strong style="color:var(--gray-900);" id="planDur">2 Weeks</strong></div>
+          </div>
+        </div>
+
+        <div class="summary-card">
+          <h4>💊 Medications</h4>
+          <div id="summaryMeds" style="font-size:12.5px;color:var(--gray-400);">No medications added yet.</div>
+        </div>
+
+        <div class="summary-card">
+          <h4>💡 Quick Tips</h4>
+          <div style="font-size:12px;color:var(--gray-500);line-height:1.7;">
+            • Use bullet points in notes for clarity<br>
+            • Specify exact dosage and frequency<br>
+            • Include follow-up timeline
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="nav.js"></script>
+<script>
+renderSidebar('treatment');
+
+// Set today date
+document.getElementById('planDate').textContent = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+
+let meds = [];
+let selectedDur = '2 Weeks';
+
+function addMed() {
+  const inp = document.getElementById('medInput');
+  const val = inp.value.trim();
+  if (!val) return;
+  meds.push(val);
+  inp.value = '';
+  renderMeds();
+}
+
+function removeMed(i) {
+  meds.splice(i, 1);
+  renderMeds();
+}
+
+function renderMeds() {
+  document.getElementById('medList').innerHTML = meds.map((m, i) => `
+    <span class="removable-tag">${m}<button onclick="removeMed(${i})">×</button></span>
+  `).join('');
+
+  const summary = document.getElementById('summaryMeds');
+  if (meds.length === 0) {
+    summary.innerHTML = '<span style="color:var(--gray-400)">No medications added yet.</span>';
+  } else {
+    summary.innerHTML = meds.map(m => `<div class="med-item"><span class="dot"></span>${m}</div>`).join('');
+  }
+}
+
+function selectDur(el, val) {
+  document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  selectedDur = val;
+  document.getElementById('planDur').textContent = val;
+  document.getElementById('customDur').value = '';
+}
+
+document.getElementById('customDur').addEventListener('input', function() {
+  if (this.value) {
+    document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('planDur').textContent = this.value;
+  }
+});
+
+function clearForm() {
+  meds = [];
+  renderMeds();
+  document.getElementById('tests').value = '';
+  document.getElementById('lifestyle').value = '';
+  document.getElementById('diet').value = '';
+  document.getElementById('customDur').value = '';
+}
+
+function savePlan() {
+  const tests = document.getElementById('tests').value;
+  const lifestyle = document.getElementById('lifestyle').value;
+  if (meds.length === 0 && !tests && !lifestyle) {
+    alert('Please fill in at least one section of the treatment plan.');
+    return;
+  }
+  alert('Treatment plan saved successfully!');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedBits – Consultation Notes</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .search-bar {
+      display: flex; gap: 10px; align-items: center;
+      background: var(--green-50);
+      border: 1.5px solid var(--green-300);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      margin-bottom: 20px;
+    }
+    .search-bar input {
+      border: none; background: transparent; outline: none;
+      font-family: 'DM Sans', sans-serif; font-size: 13.5px; flex: 1;
+      color: var(--gray-900);
+    }
+    .search-bar input::placeholder { color: var(--gray-300); }
+
+    .record-item {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--gray-100);
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .record-item:hover { background: var(--gray-50); border-radius: var(--radius-sm); padding-left: 8px; }
+    .record-item:last-child { border-bottom: none; }
+
+    .record-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: white; flex-shrink: 0;
+    }
+
+    .record-info { flex: 1; }
+    .record-info .r-name { font-size: 13.5px; font-weight: 600; color: var(--gray-900); }
+    .record-info .r-age { font-size: 11.5px; color: var(--gray-400); }
+    .record-info .r-note { font-size: 12px; color: var(--gray-500); margin-top: 4px; line-height: 1.5; }
+    .record-right { text-align: right; flex-shrink: 0; }
+    .record-right .r-date { font-size: 11px; color: var(--gray-400); margin-bottom: 6px; }
+
+    /* Detail Panel */
+    .detail-panel {
+      position: fixed;
+      top: 0; right: 0;
+      width: 480px;
+      height: 100vh;
+      background: var(--white);
+      border-left: 1px solid var(--gray-200);
+      box-shadow: -4px 0 24px rgba(0,0,0,0.08);
+      z-index: 200;
+      transform: translateX(100%);
+      transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+      display: flex; flex-direction: column;
+      overflow-y: auto;
+    }
+    .detail-panel.open { transform: translateX(0); }
+
+    .detail-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--gray-100);
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; background: var(--white); z-index: 10;
+    }
+    .detail-header h3 { font-size: 16px; font-weight: 700; color: var(--gray-900); }
+
+    .close-btn {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--gray-100); border: none;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--gray-500);
+      transition: all 0.15s;
+    }
+    .close-btn:hover { background: var(--gray-200); color: var(--gray-900); }
+
+    .detail-body { padding: 24px; flex: 1; }
+    .detail-section { margin-bottom: 20px; }
+    .detail-section label { font-size: 11.5px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
+    .detail-section .value { font-size: 13.5px; color: var(--gray-900); line-height: 1.6; }
+
+    .overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.3);
+      z-index: 199;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.28s;
+    }
+    .overlay.show { opacity: 1; pointer-events: all; }
+
+    /* Create Note Modal */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 300;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-backdrop.show { display: flex; }
+    .modal {
+      background: var(--white);
+      border-radius: var(--radius);
+      width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-md);
+      animation: slideUp 0.22s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--gray-100);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-header h3 { font-size: 16px; font-weight: 700; }
+    .modal-body { padding: 24px; }
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--gray-100);
+      display: flex; justify-content: flex-end; gap: 10px;
+    }
+
+    .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      background: var(--green-100);
+      color: var(--green-700);
+      border-radius: 999px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+<aside class="sidebar" id="sidebar"></aside>
+
+<div class="overlay" id="overlay" onclick="closeDetail()"></div>
+
+<!-- Detail Panel -->
+<div class="detail-panel" id="detailPanel">
+  <div class="detail-header">
+    <h3 id="dp-name">Patient Note</h3>
+    <button class="close-btn" onclick="closeDetail()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="detail-body">
+    <div class="detail-section">
+      <label>Patient</label>
+      <div class="value" id="dp-patient">—</div>
+    </div>
+    <div class="detail-section">
+      <label>Date</label>
+      <div class="value" id="dp-date">—</div>
+    </div>
+    <div class="detail-section">
+      <label>Consultation Notes</label>
+      <div class="value" id="dp-notes">—</div>
+    </div>
+    <div class="detail-section">
+      <label>Prescription</label>
+      <div class="value" id="dp-prescription">—</div>
+    </div>
+    <div class="detail-section">
+      <label>Lab Tests</label>
+      <div id="dp-labs" class="tag-list"></div>
+    </div>
+    <div class="detail-section">
+      <label>Follow-Up</label>
+      <div class="value" id="dp-followup">—</div>
+    </div>
+  </div>
+</div>
+
+<!-- Create Note Modal -->
+<div class="modal-backdrop" id="createModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Create Note</h3>
+      <button class="close-btn" onclick="closeModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Patient</label>
+        <input class="form-input" placeholder="Search patient..." id="cn-patient" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input class="form-input" type="date" id="cn-date" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Consultation Notes</label>
+        <textarea class="form-textarea" placeholder="Type the consultation log..." id="cn-notes"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Prescription</label>
+        <textarea class="form-textarea" placeholder="Add prescription details and frequency..." id="cn-prescription"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Lab Test</label>
+        <input class="form-input" placeholder="Add test..." id="cn-lab" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Follow-Up</label>
+        <input class="form-input" type="date" id="cn-followup" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveNote()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-title">
+      <h1>Consultation Notes</h1>
+      <p>Doctor Portal</p>
+    </div>
+    <div class="topbar-right">
+      <button class="icon-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </button>
+      <div class="doctor-info">
+        <div class="avatar">SJ</div>
+        <div>
+          <div class="name">Dr. Sarah Johnson</div>
+          <div class="role">Doctor</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="content">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+        <div class="search-bar" style="flex:1;margin-right:16px;margin-bottom:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--gray-400)"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input placeholder="Search appointment..." />
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="openModal()">+ Create Note</button>
+      </div>
+
+      <div class="section-header">
+        <h2>Patient Consultation Records</h2>
+        <a href="#" class="view-all">View All</a>
+      </div>
+
+      <div id="recordsList"></div>
+    </div>
+  </div>
+</div>
+
+<script src="nav.js"></script>
+<script>
+renderSidebar('consultation');
+
+const records = [
+  {
+    initials:'NV', color:'#2d7a47', name:'Neil Verma', age:'35 Yrs', date:'Mar 5, 2025',
+    note:'Patient presented with high blood pressure and dizziness. Prescribed Amlodipine. Referred to Physician.',
+    prescription:'Amlodipine 5mg once daily for 30 days.',
+    labs:['Blood Pressure Monitoring','Lipid Profile'],
+    followup:'Apr 5, 2025'
+  },
+  {
+    initials:'DP', color:'#7c3aed', name:'Dev Patel', age:'30 Male', date:'Mar 5, 2025',
+    note:'Patient came for routine checkup.',
+    prescription:'Vitamin D 1000IU daily.',
+    labs:['CBC','Vitamin D'],
+    followup:'Jun 5, 2025'
+  },
+  {
+    initials:'NS', color:'#0891b2', name:'Nia Sharma', age:'45 F', date:'Mar 5, 2025',
+    note:'Follow-up consultation for diabetes management.',
+    prescription:'Metformin 500mg twice daily.',
+    labs:['HbA1c','Fasting Blood Sugar'],
+    followup:'Apr 1, 2025'
+  }
+];
+
+function renderRecords() {
+  const list = document.getElementById('recordsList');
+  list.innerHTML = records.map((r, i) => `
+    <div class="record-item" onclick="openDetail(${i})">
+      <div class="record-avatar" style="background:${r.color}">${r.initials}</div>
+      <div class="record-info">
+        <div class="r-name">${r.name} · <span style="font-weight:400;color:var(--gray-400)">${r.age}</span></div>
+        <div class="r-note">${r.note}</div>
+      </div>
+      <div class="record-right">
+        <div class="r-date">${r.date}</div>
+        <button class="btn btn-outline btn-sm" onclick="openDetail(${i});event.stopPropagation()">View</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openDetail(i) {
+  const r = records[i];
+  document.getElementById('dp-name').textContent = r.name;
+  document.getElementById('dp-patient').textContent = `${r.name} (${r.age})`;
+  document.getElementById('dp-date').textContent = r.date;
+  document.getElementById('dp-notes').textContent = r.note;
+  document.getElementById('dp-prescription').textContent = r.prescription;
+  document.getElementById('dp-labs').innerHTML = r.labs.map(l => `<span class="tag">${l}</span>`).join('');
+  document.getElementById('dp-followup').textContent = r.followup;
+  document.getElementById('detailPanel').classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+}
+
+function closeDetail() {
+  document.getElementById('detailPanel').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+function openModal() { document.getElementById('createModal').classList.add('show'); }
+function closeModal() { document.getElementById('createModal').classList.remove('show'); }
+
+function saveNote() {
+  const patient = document.getElementById('cn-patient').value;
+  const notes = document.getElementById('cn-notes').value;
+  const prescription = document.getElementById('cn-prescription').value;
+  const lab = document.getElementById('cn-lab').value;
+  const followup = document.getElementById('cn-followup').value;
+
+  if (!patient || !notes) { alert('Please fill patient name and notes.'); return; }
+
+  const initials = patient.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const colors = ['#2d7a47','#7c3aed','#0891b2','#d97706','#dc2626'];
+  records.unshift({
+    initials, color: colors[records.length % colors.length],
+    name: patient, age: '—', date: new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),
+    note: notes, prescription: prescription || '—',
+    labs: lab ? [lab] : [], followup: followup || '—'
+  });
+  renderRecords();
+  closeModal();
+}
+
+renderRecords();
+</script>
+</body>
+</html>
