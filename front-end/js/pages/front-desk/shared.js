@@ -14,7 +14,7 @@ async function loadData() {
   if (AppState.data) return AppState.data;
 
   try {
-    const resp = await fetch('../../../data/data.json'); // ✅ FIXED PATH
+    const resp = await fetch('../../js/data/data.json') 
 
     if (!resp.ok) throw new Error('Failed to load data');
 
