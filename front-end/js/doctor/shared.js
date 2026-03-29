@@ -73,6 +73,14 @@ const COMPONENT_FALLBACKS = {
     <nav class="sidebar-nav" data-sidebar-nav></nav>
     <div class="sidebar-footer">
       <div class="sidebar-doctor-card" data-doctor-card></div>
+      <a class="nav-item" data-logout-link href="../../login.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        <span>Logout</span>
+      </a>
     </div>
   `,
   navbar: `
@@ -84,7 +92,7 @@ const COMPONENT_FALLBACKS = {
           <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
         </svg>
       </button>
-      <div class="doctor-info" data-topbar-doctor></div>
+      <a class="doctor-info" data-topbar-doctor href="profile.html"></a>
     </div>
   `,
 };
@@ -113,6 +121,13 @@ function doctorTopbarMarkup() {
   `;
 }
 
+function clearDoctorSession() {
+  localStorage.removeItem("medbits_session");
+  localStorage.removeItem("medbits_selected_patient");
+  localStorage.removeItem("medbits_selected_specialty");
+  localStorage.removeItem("medbits_selected_doctor");
+}
+
 async function loadComponent(target, componentName) {
   if (!target) return;
 
@@ -130,6 +145,7 @@ async function loadComponent(target, componentName) {
 function populateSidebar(sidebar, activeId) {
   const nav = sidebar.querySelector("[data-sidebar-nav]");
   const doctorCard = sidebar.querySelector("[data-doctor-card]");
+  const logoutLink = sidebar.querySelector("[data-logout-link]");
 
   if (nav) {
     nav.innerHTML = NAV_ITEMS.map(
@@ -144,6 +160,15 @@ function populateSidebar(sidebar, activeId) {
 
   if (doctorCard) {
     doctorCard.innerHTML = doctorCardMarkup();
+  }
+
+  if (logoutLink) {
+    logoutLink.setAttribute("href", "../login.html");
+    logoutLink.addEventListener("click", (event) => {
+      event.preventDefault();
+      clearDoctorSession();
+      window.location.replace("../login.html");
+    });
   }
 }
 
@@ -160,6 +185,7 @@ function populateTopbar(topbar, activeId) {
   }
 
   if (doctor) {
+    doctor.setAttribute("href", "profile.html");
     doctor.innerHTML = doctorTopbarMarkup();
   }
 }
