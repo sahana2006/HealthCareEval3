@@ -1,0 +1,126 @@
+.referral-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 20px;
+}
+
+.referral-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.referral-stat {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px 20px;
+}
+
+.referral-stat .label {
+  color: var(--gray-400);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.referral-stat .value {
+  font-family: "DM Serif Display", serif;
+  font-size: 28px;
+  margin-top: 6px;
+}
+
+.referral-stat .meta {
+  margin-top: 4px;
+  font-size: 11.5px;
+  color: var(--accent);
+}
+
+.referral-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.referral-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.referral-item:last-child {
+  border-bottom: none;
+}
+
+.referral-item h3 {
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.referral-item p {
+  font-size: 12px;
+  color: var(--gray-500);
+  line-height: 1.6;
+}
+
+.referral-side {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.specialist-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.specialist-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.specialist-item:last-child {
+  border-bottom: none;
+}
+
+.specialist-item .info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.specialist-item .avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--green-100);
+  color: var(--green-700);
+  font-weight: 700;
+}
+
+.specialist-item .name {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.specialist-item .meta {
+  font-size: 11px;
+  color: var(--gray-400);
+}
+
+@media (max-width: 900px) {
+  .referral-grid,
+  .referral-summary {
+    grid-template-columns: 1fr;
+  }
+}

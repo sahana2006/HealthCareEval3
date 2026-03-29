@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedBits - Internal Referral</title>
+  <link rel="stylesheet" href="../../css/doctor/shared.css" />
+  <link rel="stylesheet" href="../../css/doctor/referral.css" />
+</head>
+<body>
+<aside class="sidebar" id="sidebar"></aside>
+
+<div class="main">
+  <header class="topbar" id="doctor-topbar"></header>
+
+  <div class="content">
+    <div class="referral-summary">
+      <div class="referral-stat">
+        <div class="label">Open Referrals</div>
+        <div class="value">08</div>
+        <div class="meta">3 require action today</div>
+      </div>
+      <div class="referral-stat">
+        <div class="label">Accepted This Week</div>
+        <div class="value">14</div>
+        <div class="meta">+4 from last week</div>
+      </div>
+      <div class="referral-stat">
+        <div class="label">Specialists Available</div>
+        <div class="value">22</div>
+        <div class="meta">Across 6 departments</div>
+      </div>
+    </div>
+
+    <div class="referral-grid">
+      <div class="card">
+        <div class="section-header">
+          <h2>Recent Referrals</h2>
+          <a href="#" class="view-all">View All</a>
+        </div>
+
+        <div class="referral-list">
+          <div class="referral-item">
+            <div>
+              <h3>Nia Sharma to Cardiology</h3>
+              <p>Recurring chest discomfort with elevated blood pressure during last two visits.</p>
+            </div>
+            <div>
+              <span class="badge badge-yellow">Pending</span>
+            </div>
+          </div>
+
+          <div class="referral-item">
+            <div>
+              <h3>Dev Patel to Endocrinology</h3>
+              <p>HbA1c trend review requested for long-term diabetes management follow-up.</p>
+            </div>
+            <div>
+              <span class="badge badge-green">Accepted</span>
+            </div>
+          </div>
+
+          <div class="referral-item">
+            <div>
+              <h3>Rhea Nair to Radiology</h3>
+              <p>Recommended imaging for persistent lower back pain after initial medication course.</p>
+            </div>
+            <div>
+              <span class="badge badge-blue">Scheduled</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="referral-side">
+        <div class="card">
+          <div class="section-header">
+            <h2>Create Referral</h2>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Patient</label>
+            <select class="form-select">
+              <option>Neil Verma</option>
+              <option>Dev Patel</option>
+              <option>Nia Sharma</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Department</label>
+            <select class="form-select">
+              <option>Cardiology</option>
+              <option>Endocrinology</option>
+              <option>Neurology</option>
+              <option>Radiology</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Reason</label>
+            <textarea class="form-textarea" placeholder="Summarize the clinical reason for referral..."></textarea>
+          </div>
+
+          <button class="btn btn-primary" style="width:100%;">Send Referral</button>
+        </div>
+
+        <div class="card">
+          <div class="section-header">
+            <h2>Recommended Specialists</h2>
+          </div>
+
+          <div class="specialist-list">
+            <div class="specialist-item">
+              <div class="info">
+                <div class="avatar">AK</div>
+                <div>
+                  <div class="name">Dr. Asha Kulkarni</div>
+                  <div class="meta">Cardiology</div>
+                </div>
+              </div>
+              <span class="badge badge-green">Available</span>
+            </div>
+
+            <div class="specialist-item">
+              <div class="info">
+                <div class="avatar">RM</div>
+                <div>
+                  <div class="name">Dr. Rohan Mehta</div>
+                  <div class="meta">Endocrinology</div>
+                </div>
+              </div>
+              <span class="badge badge-blue">Tomorrow</span>
+            </div>
+
+            <div class="specialist-item">
+              <div class="info">
+                <div class="avatar">PS</div>
+                <div>
+                  <div class="name">Dr. Priya Shah</div>
+                  <div class="meta">Radiology</div>
+                </div>
+              </div>
+              <span class="badge badge-yellow">Busy</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../../js/doctor/shared.js"></script>
+<script src="../../js/doctor/referral.js"></script>
+</body>
+</html>
