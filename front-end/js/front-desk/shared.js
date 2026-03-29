@@ -144,7 +144,7 @@ function renderShell(activePage) {
     logoutBtn.addEventListener('click', (e) => {
       e.preventDefault();
       clearSession();
-      window.location.href = 'dashboard.html';
+      window.location.href = '../login.html';
     });
   }
 }
