@@ -16,9 +16,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
-  queueItems = [...data.queue];
+  ensureQueueStore();
+  queueItems = [...getQueueItems()];
   allPatients = data.patients;
   allSpecialties = data.specialties;
+  initializeTokenCounters();
 
   // Populate patient dropdown
   const patientSelect = document.getElementById('patient-select');
@@ -38,6 +40,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     specSelect.appendChild(opt);
   });
 
+  specSelect.addEventListener('change', renderQueue);
+
   // Render queue
   renderQueue();
 
@@ -54,10 +58,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 function renderQueue() {
   const container = document.getElementById('waiting-list-container');
   const countBadge = document.getElementById('queue-count');
+  const selectedSpecialtyId = document.getElementById('specialty-select').value;
+  const selectedSpecialty = allSpecialties.find(s => s.id === selectedSpecialtyId);
+  const visibleQueueItems = selectedSpecialty
+    ? queueItems.filter(item => item.specialty === selectedSpecialty.name)
+    : queueItems;
 
-  countBadge.textContent = `${queueItems.length} patient${queueItems.length !== 1 ? 's' : ''}`;
+  countBadge.textContent = `${visibleQueueItems.length} patient${visibleQueueItems.length !== 1 ? 's' : ''}`;
 
-  if (!queueItems.length) {
+  if (!visibleQueueItems.length) {
     container.innerHTML = `
       <div class="empty-state">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -65,14 +74,14 @@ function renderQueue() {
           <circle cx="9" cy="7" r="4"/>
           <circle cx="23" cy="15" r="4"/>
         </svg>
-        <p>No patients in queue</p>
+        <p>${selectedSpecialty ? `No patients in ${selectedSpecialty.name} queue` : 'No patients in queue'}</p>
       </div>`;
     return;
   }
 
   // Status order: In Consultation first, then Confirmed, Waiting, Pending
   const order = { 'In Consultation': 0, 'Confirmed': 1, 'Waiting': 2, 'Pending': 3 };
-  const sorted = [...queueItems].sort((a, b) => (order[a.status] ?? 4) - (order[b.status] ?? 4));
+  const sorted = [...visibleQueueItems].sort((a, b) => (order[a.status] ?? 4) - (order[b.status] ?? 4));
 
   container.innerHTML = sorted.map(item => {
     const statusClass = item.status.toLowerCase().replace(' ', '-');
@@ -107,6 +116,19 @@ function getBadgeClass(status) {
     case 'Pending': return 'badge-warning';
     default: return 'badge-purple';
   }
+}
+
+function initializeTokenCounters() {
+  tokenCounters = {};
+
+  queueItems.forEach(item => {
+    const match = item.code.match(/^([A-Z]{2})-(\d+)$/);
+    if (!match) return;
+
+    const [, prefix, num] = match;
+    const nextValue = Number(num) + 1;
+    tokenCounters[prefix] = Math.max(tokenCounters[prefix] || 1, nextValue);
+  });
 }
 
 // --- Generate Token ---
@@ -147,7 +169,9 @@ function generateToken() {
   };
 
   queueItems.unshift(newEntry);
+  saveQueue(queueItems);
   renderQueue();
+  renderNotifications();
 
   // Show token modal
   document.getElementById('token-display').textContent = tokenCode;

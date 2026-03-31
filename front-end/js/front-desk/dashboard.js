@@ -13,22 +13,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
+  ensureQueueStore();
+  const queueItems = getQueueItems();
+  const activeQueueItems = queueItems.filter(item => item.status !== 'Completed');
+  const waitingItems = queueItems.filter(q => q.status === 'Waiting').slice(0, 4);
+  const consultItems = queueItems.filter(q => q.status === 'In Consultation').slice(0, 4);
+
   // --- Render Stats ---
   document.getElementById('stat-walkins').textContent = data.dashboard.walkInsToday;
   document.getElementById('stat-appointments').textContent = data.dashboard.appointmentsToday;
-  document.getElementById('stat-queue').textContent = data.dashboard.patientsInQueue;
-  document.getElementById('stat-revenue').textContent = formatCurrency(data.dashboard.todaysRevenue);
+  document.getElementById('stat-queue').textContent = activeQueueItems.length;
 
   // --- Render Queue (Waiting) ---
   const waitingList = document.getElementById('queue-waiting-list');
-  const waitingItems = data.queue.filter(q => q.status === 'Waiting').slice(0, 4);
 
   if (waitingItems.length === 0) {
     waitingList.innerHTML = '<div class="empty-state"><p>No patients waiting</p></div>';
   } else {
     waitingList.innerHTML = waitingItems.map(item => `
       <div class="queue-item">
-        <div class="queue-item-token">Token#${item.token}</div>
+        <div class="queue-item-token">${item.code}</div>
         <div class="queue-item-name">${item.patientName}</div>
       </div>
     `).join('');
@@ -36,14 +40,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // --- Render Queue (In Consultation) ---
   const consultList = document.getElementById('queue-consulting-list');
-  const consultItems = data.queue.filter(q => q.status === 'In Consultation').slice(0, 4);
 
   if (consultItems.length === 0) {
     consultList.innerHTML = '<div class="empty-state"><p>No active consultations</p></div>';
   } else {
     consultList.innerHTML = consultItems.map(item => `
       <div class="queue-item queue-item--consulting">
-        <div class="queue-item-token">Token#${item.token}</div>
+        <div class="queue-item-token">${item.code}</div>
         <div class="queue-item-name">${item.patientName}</div>
         <div class="queue-item-doctor">${item.doctorName}</div>
       </div>

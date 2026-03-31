@@ -9,6 +9,10 @@ const AppState = {
   currentUser: null
 };
 
+const STORAGE_KEYS = {
+  queue: 'medbits_frontdesk_queue'
+};
+
 // --- Load JSON data ---
 async function loadData() {
   if (AppState.data) return AppState.data;
@@ -69,6 +73,35 @@ function getSelectedDoctor() {
 
 function setSelectedDoctor(d) {
   localStorage.setItem('medbits_selected_doctor', JSON.stringify(d));
+}
+
+function getStoredQueue() {
+  const raw = localStorage.getItem(STORAGE_KEYS.queue);
+  return raw ? JSON.parse(raw) : null;
+}
+
+function saveQueue(queueItems) {
+  localStorage.setItem(STORAGE_KEYS.queue, JSON.stringify(queueItems));
+}
+
+function getQueueItems() {
+  const storedQueue = getStoredQueue();
+  if (Array.isArray(storedQueue) && storedQueue.length > 0) return storedQueue;
+
+  const defaultQueue = AppState.data?.queue;
+  if (Array.isArray(defaultQueue) && defaultQueue.length > 0) {
+    saveQueue(defaultQueue);
+    return defaultQueue;
+  }
+
+  return Array.isArray(storedQueue) ? storedQueue : [];
+}
+
+function ensureQueueStore() {
+  const storedQueue = getStoredQueue();
+  if ((!Array.isArray(storedQueue) || storedQueue.length === 0) && AppState.data?.queue?.length) {
+    saveQueue(AppState.data.queue);
+  }
 }
 
 // --- Toast notifications ---
@@ -137,6 +170,7 @@ function renderShell(activePage) {
   document.getElementById('topbar-title-h1').textContent = title;
   document.getElementById('topbar-subtitle').textContent = subtitle;
   document.getElementById('topbar-username').textContent = userName;
+  setupNotifications();
 
   // Logout handler
   const logoutBtn = document.getElementById('logout-btn');
@@ -147,6 +181,66 @@ function renderShell(activePage) {
       window.location.href = '../login.html';
     });
   }
+}
+
+function setupNotifications() {
+  const bell = document.querySelector('.topbar-bell');
+  if (!bell) return;
+
+  let panel = document.getElementById('notification-panel');
+  if (!panel) {
+    panel = document.createElement('div');
+    panel.id = 'notification-panel';
+    panel.className = 'notification-panel hidden';
+    panel.innerHTML = `
+      <div class="notification-panel-header">
+        <div class="notification-panel-title">Notifications</div>
+        <div class="notification-panel-subtitle">Front desk updates</div>
+      </div>
+      <div class="notification-list" id="notification-list"></div>
+    `;
+    document.body.appendChild(panel);
+  }
+
+  renderNotifications();
+
+  bell.addEventListener('click', (event) => {
+    event.stopPropagation();
+    panel.classList.toggle('hidden');
+  });
+
+  panel.addEventListener('click', (event) => {
+    event.stopPropagation();
+  });
+
+  document.addEventListener('click', () => {
+    panel.classList.add('hidden');
+  });
+}
+
+function renderNotifications() {
+  const container = document.getElementById('notification-list');
+  if (!container) return;
+
+  const queueItems = getQueueItems();
+  const waitingCount = queueItems.filter(item => item.status === 'Waiting').length;
+  const consultingCount = queueItems.filter(item => item.status === 'In Consultation').length;
+
+  const notifications = [
+    { title: `${waitingCount} patients waiting`, meta: 'Queue management', tone: 'warning' },
+    { title: `${consultingCount} consultations in progress`, meta: 'Doctor desks', tone: 'info' },
+    { title: 'Walk-in counter is active', meta: 'Front desk operations', tone: 'success' }
+  ];
+
+  container.innerHTML = notifications.map(item => `
+    <div class="notification-item">
+      <span class="notification-dot notification-dot--${item.tone}"></span>
+      <div class="notification-copy">
+        <div class="notification-title">${item.title}</div>
+        <div class="notification-meta">${item.meta}</div>
+      </div>
+    </div>
+  `).join('');
 }
 
 // --- Validate form fields ---
