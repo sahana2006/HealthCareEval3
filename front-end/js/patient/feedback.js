@@ -98,11 +98,17 @@ function submitFeedback() {
 // ── EDIT / DELETE ─────────────────────────────────────────────────
 
 function editFeedback(id) {
-  const f = DB.feedback.find(x => x.id === id);
+  const f = DB.feedback.find((x) => x.id === id);
   currentEditId = id;
-  document.getElementById('ef-rating').value  = f.rating;
-  document.getElementById('ef-comment').value = f.comment;
-  openModal(document.getElementById('tpl-editFeedback').innerHTML);
+
+  // 1. Open modal FIRST
+  openModal(document.getElementById("tpl-editFeedback").innerHTML);
+
+  // 2. THEN set values
+  setTimeout(() => {
+    document.getElementById("ef-rating").value = f.rating;
+    document.getElementById("ef-comment").value = f.comment;
+  }, 0);
 }
 
 function saveFeedback() {
