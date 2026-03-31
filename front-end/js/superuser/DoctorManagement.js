@@ -1,13 +1,13 @@
 // app.js — MEDBITS Doctor Management (consolidated)
 // Combines: doctors_data.js + DoctorManagement_view_doctor.js +
 //           ViewAllDoctor.js + DoctorManagementAdd.js + Doctor_edit.js
-
+ 
 /* ════════════════════════════════════════════════════════════════
    1. DOCTOR STORE (localStorage)
    ════════════════════════════════════════════════════════════════ */
 (function () {
     const STORAGE_KEY = 'medbits_doctors';
-
+ 
     const DEFAULT_DOCTORS = [
         {
             id: 1,
@@ -70,7 +70,7 @@
             slotDuration: '15 minutes', slotDurationMinutes: '15',
         },
     ];
-
+ 
     window.DoctorStore = {
         getAll() {
             try {
@@ -115,13 +115,20 @@
         fullName(doctor) {
             return `${doctor.firstName} ${doctor.lastName}`;
         },
+        delete(id) {
+            const all = this.getAll();
+            const filtered = all.filter(d => d.id !== Number(id));
+            if (filtered.length === all.length) return false;
+            this.saveAll(filtered);
+            return true;
+        },
         reset() {
             this.saveAll(DEFAULT_DOCTORS);
         },
     };
 })();
-
-
+ 
+ 
 /* ════════════════════════════════════════════════════════════════
    2. SPA ROUTER — page switching
    ════════════════════════════════════════════════════════════════ */
@@ -131,10 +138,10 @@ const Pages = {
     ADD_DOCTOR:      'page-add-doctor',
     EDIT_DOCTOR:     'page-edit-doctor',
 };
-
+ 
 let _currentPage = Pages.VIEW_DOCTOR;
 let _currentDoctorId = null; // used by edit & detail views
-
+ 
 function showPage(pageId) {
     Object.values(Pages).forEach(id => {
         const el = document.getElementById(id);
@@ -145,7 +152,7 @@ function showPage(pageId) {
     _currentPage = pageId;
     lucide.createIcons(); // re-render icons for newly shown page
 }
-
+ 
 // Sidebar nav
 document.querySelectorAll('.nav-item[data-page]').forEach(link => {
     link.addEventListener('click', e => {
@@ -157,7 +164,7 @@ document.querySelectorAll('.nav-item[data-page]').forEach(link => {
         // Other sidebar nav items are placeholders in this SPA
     });
 });
-
+ 
 // Quick-action buttons (all pages share the same data-action pattern)
 document.addEventListener('click', e => {
     const btn = e.target.closest('[data-action]');
@@ -170,10 +177,10 @@ document.addEventListener('click', e => {
         navigateTo(Pages.EDIT_DOCTOR, _currentDoctorId);
     }
 });
-
+ 
 function navigateTo(pageId, doctorId) {
     showPage(pageId);
-
+ 
     if (pageId === Pages.VIEW_DOCTOR) {
         initViewPage();
     } else if (pageId === Pages.VIEW_ALL_DOCTOR && doctorId != null) {
@@ -184,8 +191,8 @@ function navigateTo(pageId, doctorId) {
         initEditPage(doctorId);
     }
 }
-
-
+ 
+ 
 /* ════════════════════════════════════════════════════════════════
    3. SHARED UTILITIES
    ════════════════════════════════════════════════════════════════ */
@@ -204,13 +211,13 @@ function showToast(message, type = 'success') {
         setTimeout(() => toast.remove(), 400);
     }, 2800);
 }
-
+ 
 function setInvalid(el, invalid) {
     if (!el) return;
     if (invalid) el.classList.add('invalid');
     else         el.classList.remove('invalid');
 }
-
+ 
 function formatTime(val) {
     if (!val) return '';
     const [h, m] = val.split(':');
@@ -219,7 +226,7 @@ function formatTime(val) {
     const displayHour = hour % 12 || 12;
     return `${displayHour}:${m} ${suffix}`;
 }
-
+ 
 function to24h(str) {
     if (!str) return '';
     if (/^\d{2}:\d{2}$/.test(str)) return str;
@@ -231,7 +238,7 @@ function to24h(str) {
     if (period.toUpperCase() === 'AM' && h === 12) h = 0;
     return `${String(h).padStart(2, '0')}:${m}`;
 }
-
+ 
 function enforceSingleWordFields(form, fieldNames) {
     fieldNames.forEach(name => {
         const el = form.querySelector(`[name="${name}"]`);
@@ -240,7 +247,7 @@ function enforceSingleWordFields(form, fieldNames) {
         el.addEventListener('keydown', e => { if (e.key === ' ') e.preventDefault(); });
     });
 }
-
+ 
 function enforceDigitsOnContact(form) {
     const el = form.querySelector('[name="contact"]');
     if (!el) return;
@@ -248,7 +255,7 @@ function enforceDigitsOnContact(form) {
         el.value = el.value.replace(/\D/g, '').slice(0, 10);
     });
 }
-
+ 
 function makeTimeSyncHandler(startEl, endEl, hiddenEl) {
     function sync() {
         if (startEl.value && endEl.value) {
@@ -261,11 +268,11 @@ function makeTimeSyncHandler(startEl, endEl, hiddenEl) {
     endEl.addEventListener('change', sync);
     return sync;
 }
-
+ 
 function validateForm(form, startEl, endEl) {
     let valid = true;
     const singleWordFields = ['firstName', 'lastName', 'specialization', 'qualification', 'department'];
-
+ 
     singleWordFields.forEach(name => {
         const el = form.querySelector(`[name="${name}"]`);
         if (!el) return;
@@ -273,51 +280,51 @@ function validateForm(form, startEl, endEl) {
         setInvalid(el, !ok);
         if (!ok) valid = false;
     });
-
+ 
     const dob = form.querySelector('[name="dob"]');
     if (dob) { setInvalid(dob, !dob.value); if (!dob.value) valid = false; }
-
+ 
     const email = form.querySelector('[name="email"]');
     if (email) {
         const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
         setInvalid(email, !ok); if (!ok) valid = false;
     }
-
+ 
     const gender = form.querySelector('[name="gender"]');
     if (gender) { setInvalid(gender, !gender.value); if (!gender.value) valid = false; }
-
+ 
     const contact = form.querySelector('[name="contact"]');
     if (contact) {
         const ok = /^\d{10}$/.test(contact.value.trim());
         setInvalid(contact, !ok); if (!ok) valid = false;
     }
-
+ 
     const exp = form.querySelector('[name="experience"]');
     if (exp) {
         const ok = exp.value !== '' && Number(exp.value) >= 0;
         setInvalid(exp, !ok); if (!ok) valid = false;
     }
-
+ 
     const days = form.querySelector('[name="availableDays"]');
     if (days) {
         const ok = days.value !== '' && Number(days.value) >= 1 && Number(days.value) <= 7;
         setInvalid(days, !ok); if (!ok) valid = false;
     }
-
+ 
     const slotOk = startEl.value && endEl.value && startEl.value < endEl.value;
     setInvalid(startEl, !slotOk);
     setInvalid(endEl, !slotOk);
     if (!slotOk) valid = false;
-
+ 
     const dur = form.querySelector('[name="slotDuration"]');
     if (dur) {
         const ok = dur.value !== '' && Number(dur.value) >= 5;
         setInvalid(dur, !ok); if (!ok) valid = false;
     }
-
+ 
     return valid;
 }
-
+ 
 function buildFormPayload(form) {
     const fd = new FormData(form);
     const data = Object.fromEntries(fd.entries());
@@ -329,14 +336,23 @@ function buildFormPayload(form) {
     data.slotDuration        = `${data.slotDuration} minutes`;
     return data;
 }
-
-
+ 
+ 
 /* ════════════════════════════════════════════════════════════════
    4. VIEW DOCTOR PAGE
    ════════════════════════════════════════════════════════════════ */
+function deleteDoctor(id) {
+    const doctor = DoctorStore.getById(id);
+    if (!doctor) return;
+    if (!confirm(`Delete ${DoctorStore.fullName(doctor)}? This cannot be undone.`)) return;
+    DoctorStore.delete(id);
+    showToast(`${DoctorStore.fullName(doctor)} deleted successfully.`);
+    initViewPage();
+}
+ 
 function initViewPage() {
     renderDoctorRows(DoctorStore.getAll());
-
+ 
     const searchInput = document.getElementById('view-search-input');
     if (searchInput) {
         // Remove old listeners by replacing element
@@ -347,11 +363,11 @@ function initViewPage() {
         });
     }
 }
-
+ 
 function renderDoctorRows(doctors) {
     const tbody = document.getElementById('doctors-tbody');
     if (!tbody) return;
-
+ 
     if (doctors.length === 0) {
         tbody.innerHTML = `
             <tr>
@@ -361,7 +377,7 @@ function renderDoctorRows(doctors) {
             </tr>`;
         return;
     }
-
+ 
     tbody.innerHTML = doctors.map(d => `
         <tr>
             <td class="doctor-name">${DoctorStore.fullName(d)}</td>
@@ -369,11 +385,22 @@ function renderDoctorRows(doctors) {
             <td>${d.specialization}</td>
             <td>${d.contact}</td>
             <td>
-                <button class="view-link" data-view-id="${d.id}">view all</button>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.35rem;">
+                    <button class="delete-btn" data-delete-id="${d.id}">Delete</button>
+                    <button class="view-link" data-view-id="${d.id}">view all</button>
+                </div>
             </td>
         </tr>
     `).join('');
-
+ 
+    // Attach delete click handlers
+    tbody.querySelectorAll('[data-delete-id]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = Number(btn.dataset.deleteId);
+            deleteDoctor(id);
+        });
+    });
+ 
     // Attach view-all click handlers
     tbody.querySelectorAll('[data-view-id]').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -383,8 +410,8 @@ function renderDoctorRows(doctors) {
         });
     });
 }
-
-
+ 
+ 
 /* ════════════════════════════════════════════════════════════════
    5. VIEW ALL DOCTOR (detail) PAGE
    ════════════════════════════════════════════════════════════════ */
@@ -407,7 +434,7 @@ const AVAILABILITY_FIELDS = [
     ['timeSlots',     'Time Slots'],
     ['slotDuration',  'Slot Duration'],
 ];
-
+ 
 function initDetailPage(id) {
     const doctor = DoctorStore.getById(id);
     if (!doctor) {
@@ -424,16 +451,16 @@ function initDetailPage(id) {
         }
         return;
     }
-
+ 
     // Title
     const titleEl = document.getElementById('detail-title');
     if (titleEl) titleEl.textContent = `All Details of ${DoctorStore.fullName(doctor)}`;
-
+ 
     // Render sections
     renderInfoGrid('detail-personal',      PERSONAL_FIELDS,     doctor);
     renderInfoGrid('detail-employment',    EMPLOYMENT_FIELDS,   doctor);
     renderInfoGrid('detail-availability',  AVAILABILITY_FIELDS, doctor);
-
+ 
     // Back button
     const backBtn = document.getElementById('back-to-list-btn');
     if (backBtn) {
@@ -442,14 +469,14 @@ function initDetailPage(id) {
         lucide.createIcons();
         fresh.addEventListener('click', () => navigateTo(Pages.VIEW_DOCTOR));
     }
-
+ 
     // Edit button — carry doctor id
     const editBtn = document.getElementById('detail-edit-btn');
     if (editBtn) {
         editBtn.dataset.doctorId = doctor.id;
     }
 }
-
+ 
 function renderInfoGrid(gridId, fields, doctor) {
     const grid = document.getElementById(gridId);
     if (!grid) return;
@@ -460,50 +487,50 @@ function renderInfoGrid(gridId, fields, doctor) {
         </div>
     `).join('');
 }
-
-
+ 
+ 
 /* ════════════════════════════════════════════════════════════════
    6. ADD DOCTOR PAGE
    ════════════════════════════════════════════════════════════════ */
 let _addFormInitialized = false;
-
+ 
 function initAddPage() {
     const form = document.getElementById('addDoctorForm');
     if (!form) return;
-
+ 
     form.reset();
-
+ 
     // Set max DOB
     document.getElementById('add-dob').max = new Date().toISOString().split('T')[0];
-
+ 
     if (!_addFormInitialized) {
         _addFormInitialized = true;
-
+ 
         enforceSingleWordFields(form, ['firstName', 'lastName', 'specialization', 'qualification', 'department']);
         enforceDigitsOnContact(form);
-
+ 
         const startEl  = document.getElementById('add-timeSlotStart');
         const endEl    = document.getElementById('add-timeSlotEnd');
         const hiddenEl = document.getElementById('add-timeSlots');
         const syncTime = makeTimeSyncHandler(startEl, endEl, hiddenEl);
-
+ 
         form.addEventListener('submit', e => {
             e.preventDefault();
             form.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
             syncTime();
-
+ 
             if (!validateForm(form, startEl, endEl)) {
                 showToast('Please fix the highlighted fields.', 'error');
                 return;
             }
-
+ 
             const data = buildFormPayload(form);
             DoctorStore.add(data);
             showToast('Doctor profile added successfully!');
             form.reset();
             setTimeout(() => navigateTo(Pages.VIEW_DOCTOR), 1500);
         });
-
+ 
         const cancelBtn = document.getElementById('add-cancel-btn');
         if (cancelBtn) {
             cancelBtn.addEventListener('click', () => {
@@ -514,69 +541,69 @@ function initAddPage() {
         }
     }
 }
-
-
+ 
+ 
 /* ════════════════════════════════════════════════════════════════
    7. EDIT DOCTOR PAGE
    ════════════════════════════════════════════════════════════════ */
 let _editFormInitialized = false;
 let _editCurrentDoctorId = null;
-
+ 
 function initEditPage(preloadId) {
     const form = document.getElementById('editDoctorForm');
     if (!form) return;
-
+ 
     form.reset();
     _editCurrentDoctorId = null;
-
+ 
     // Set max DOB
     document.getElementById('edit-dob').max = new Date().toISOString().split('T')[0];
-
+ 
     const startEl  = document.getElementById('edit-timeSlotStart');
     const endEl    = document.getElementById('edit-timeSlotEnd');
     const hiddenEl = document.getElementById('edit-timeSlots');
-
+ 
     if (!_editFormInitialized) {
         _editFormInitialized = true;
-
+ 
         enforceSingleWordFields(form, ['firstName', 'lastName', 'specialization', 'qualification', 'department']);
         enforceDigitsOnContact(form);
-
+ 
         const syncTime = makeTimeSyncHandler(startEl, endEl, hiddenEl);
-
+ 
         // Search input
         const searchInput = document.getElementById('edit-search-input');
         const searchBox   = searchInput ? searchInput.closest('.search-box') : null;
-
+ 
         if (searchInput && searchBox) {
             searchInput.addEventListener('input', () => {
                 const q = searchInput.value.trim();
                 if (!q) { removeEditDropdown(); return; }
                 buildEditDropdown(DoctorStore.search(q), searchBox, searchInput, form, startEl, endEl, hiddenEl);
             });
-
+ 
             searchInput.addEventListener('blur', () => {
                 setTimeout(removeEditDropdown, 150);
             });
         }
-
+ 
         // Submit
         form.addEventListener('submit', e => {
             e.preventDefault();
             form.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
-
+ 
             if (!_editCurrentDoctorId) {
                 showToast('Please search and select a doctor first.', 'error');
                 if (searchInput) searchInput.focus();
                 return;
             }
-
+ 
             syncTime();
             if (!validateForm(form, startEl, endEl)) {
                 showToast('Please fix the highlighted fields.', 'error');
                 return;
             }
-
+ 
             const data = buildFormPayload(form);
             const ok = DoctorStore.update(_editCurrentDoctorId, data);
             if (ok) {
@@ -586,7 +613,7 @@ function initEditPage(preloadId) {
                 showToast('Update failed. Doctor not found.', 'error');
             }
         });
-
+ 
         // Cancel
         const cancelBtn = document.getElementById('edit-cancel-btn');
         if (cancelBtn) {
@@ -597,7 +624,7 @@ function initEditPage(preloadId) {
             });
         }
     }
-
+ 
     // Pre-load a doctor if id was passed (e.g. from detail page edit button)
     if (preloadId != null) {
         const doctor = DoctorStore.getById(preloadId);
@@ -608,13 +635,13 @@ function initEditPage(preloadId) {
         }
     }
 }
-
+ 
 function populateEditForm(form, doctor, startEl, endEl, hiddenEl) {
     const setVal = (name, val) => {
         const el = form.querySelector(`[name="${name}"]`);
         if (el) el.value = val || '';
     };
-
+ 
     setVal('firstName',      doctor.firstName);
     setVal('lastName',       doctor.lastName);
     setVal('dob',            doctor.dob);
@@ -624,14 +651,14 @@ function populateEditForm(form, doctor, startEl, endEl, hiddenEl) {
     setVal('specialization', doctor.specialization);
     setVal('qualification',  doctor.qualification);
     setVal('department',     doctor.department);
-
+ 
     const expNum  = parseInt(doctor.experienceMonths   || doctor.experience)  || '';
     const daysNum = parseInt(doctor.availableDaysCount || doctor.availableDays) || '';
     const durNum  = parseInt(doctor.slotDurationMinutes || doctor.slotDuration) || '';
     setVal('experience',    expNum);
     setVal('availableDays', daysNum);
     setVal('slotDuration',  durNum);
-
+ 
     if (doctor.timeSlots && doctor.timeSlots.includes(' to ')) {
         const parts = doctor.timeSlots.split(' to ');
         startEl.value = to24h(parts[0].trim());
@@ -643,22 +670,22 @@ function populateEditForm(form, doctor, startEl, endEl, hiddenEl) {
         startEl.value = '';
         endEl.value   = '';
     }
-
+ 
     _editCurrentDoctorId = doctor.id;
 }
-
+ 
 function removeEditDropdown() {
     const drop = document.getElementById('mb-search-dropdown');
     if (drop) drop.remove();
 }
-
+ 
 function buildEditDropdown(doctors, searchBox, searchInput, form, startEl, endEl, hiddenEl) {
     removeEditDropdown();
     if (!doctors.length) return;
-
+ 
     const dropdown = document.createElement('ul');
     dropdown.id = 'mb-search-dropdown';
-
+ 
     doctors.forEach(d => {
         const li = document.createElement('li');
         li.textContent = DoctorStore.fullName(d);
@@ -671,11 +698,11 @@ function buildEditDropdown(doctors, searchBox, searchInput, form, startEl, endEl
         });
         dropdown.appendChild(li);
     });
-
+ 
     searchBox.appendChild(dropdown);
 }
-
-
+ 
+ 
 /* ════════════════════════════════════════════════════════════════
    8. BOOT
    ════════════════════════════════════════════════════════════════ */

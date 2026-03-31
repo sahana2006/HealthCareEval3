@@ -1,11 +1,11 @@
 // app.js — MEDBITS Front Desk Management (consolidated)
-
+ 
 // ════════════════════════════════════════════════════════════
 // STAFF STORE (from staff_data.js)
 // ════════════════════════════════════════════════════════════
 (function () {
     const STORAGE_KEY = 'medbits_staff';
-
+ 
     const DEFAULT_STAFF = [
         {
             id: 1,
@@ -48,7 +48,7 @@
             shiftStart: '07:00', shiftEnd: '15:00',
         },
     ];
-
+ 
     window.StaffStore = {
         getAll() {
             try {
@@ -91,9 +91,16 @@
         },
         fullName(member) { return `${member.firstName} ${member.lastName}`; },
         formatShift(member) { return formatTime12(member.shiftStart) + ' - ' + formatTime12(member.shiftEnd); },
+        delete(id) {
+            const all = this.getAll();
+            const filtered = all.filter(s => s.id !== Number(id));
+            if (filtered.length === all.length) return false;
+            this.saveAll(filtered);
+            return true;
+        },
         reset() { this.saveAll(DEFAULT_STAFF); },
     };
-
+ 
     function formatTime12(val) {
         if (!val) return '';
         const [h, m] = val.split(':');
@@ -104,35 +111,35 @@
     }
     window.formatTime12 = formatTime12;
 })();
-
-
+ 
+ 
 // ════════════════════════════════════════════════════════════
 // PAGE ROUTING
 // ════════════════════════════════════════════════════════════
 let _currentViewAllId = null; // track which staff we last viewed (for Edit link)
-
+ 
 function showPage(name) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const page = document.getElementById('page-' + name);
     if (page) page.classList.add('active');
-
+ 
     // Re-render table each time View is shown (picks up new/updated data)
     if (name === 'view') {
         renderStaffTable(StaffStore.getAll());
     }
-
+ 
     // Re-init edit page
     if (name === 'edit') {
         initEditPage();
     }
-
+ 
     // Scroll to top
     document.querySelector('.content').scrollTop = 0;
-
+ 
     // Re-run lucide icons for any newly shown elements
     lucide.createIcons();
 }
-
+ 
 // Called from ViewAll page "Edit Staff Profile" quick action
 function goEditFromView() {
     showPage('edit');
@@ -144,11 +151,11 @@ function goEditFromView() {
         }
     }
 }
-
+ 
 window.showPage = showPage;
 window.goEditFromView = goEditFromView;
-
-
+ 
+ 
 // ════════════════════════════════════════════════════════════
 // SHARED UTILITIES
 // ════════════════════════════════════════════════════════════
@@ -169,36 +176,45 @@ function showToast(message, type = 'success') {
     document.body.appendChild(toast);
     setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 400); }, 2800);
 }
-
+ 
 function setInvalid(el, invalid) {
     if (!el) return;
     invalid ? el.classList.add('invalid') : el.classList.remove('invalid');
 }
-
+ 
 function formatDate(dateStr) {
     if (!dateStr) return '—';
     const [y, m, d] = dateStr.split('-');
     if (!y || !m || !d) return dateStr;
     return `${d}/${m}/${y}`;
 }
-
+ 
 // Enforce single word (no spaces) on an input
 function enforceSingleWord(el) {
     el.addEventListener('input', () => { el.value = el.value.replace(/\s/g, ''); });
     el.addEventListener('keydown', e => { if (e.key === ' ') e.preventDefault(); });
 }
-
+ 
 // Enforce digits-only on a tel input
 function enforceDigits(el, maxLen) {
     el.addEventListener('input', () => {
         el.value = el.value.replace(/\D/g, '').slice(0, maxLen);
     });
 }
-
-
+ 
+ 
 // ════════════════════════════════════════════════════════════
 // VIEW STAFF PAGE
 // ════════════════════════════════════════════════════════════
+window.deleteStaff = function(id) {
+    const member = StaffStore.getById(id);
+    if (!member) return;
+    if (!confirm(`Delete ${StaffStore.fullName(member)}? This cannot be undone.`)) return;
+    StaffStore.delete(id);
+    showToast(`${StaffStore.fullName(member)} deleted successfully.`);
+    renderStaffTable(StaffStore.getAll());
+};
+ 
 function renderStaffTable(members) {
     const tbody = document.getElementById('staffTableBody');
     if (!members.length) {
@@ -215,7 +231,10 @@ function renderStaffTable(members) {
             <td>${(m.languages || []).join(', ') || '—'}</td>
             <td>${m.contact}</td>
             <td class="view-all">
-                <a href="javascript:void(0)" onclick="openViewAll(${m.id})">view all</a>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.35rem;">
+                    <button class="delete-btn" onclick="deleteStaff(${m.id})">Delete</button>
+                    <a href="javascript:void(0)" onclick="openViewAll(${m.id})">view all</a>
+                </div>
             </td>
         </tr>`).join('');
 }
@@ -224,7 +243,7 @@ window.openViewAll = function(id) {
     renderViewAll(id);
     showPage('viewall');
 };
-
+ 
 function initViewPage() {
     const searchInput = document.getElementById('viewSearchInput');
     renderStaffTable(StaffStore.getAll());
@@ -232,8 +251,8 @@ function initViewPage() {
         renderStaffTable(StaffStore.search(searchInput.value.trim()));
     });
 }
-
-
+ 
+ 
 // ════════════════════════════════════════════════════════════
 // VIEW ALL (DETAIL) PAGE
 // ════════════════════════════════════════════════════════════
@@ -246,16 +265,16 @@ function renderViewAll(id) {
         document.getElementById('availabilityGrid').innerHTML = '';
         return;
     }
-
+ 
     document.getElementById('profileTitle').textContent = `All Details of ${StaffStore.fullName(member)}`;
-
+ 
     function field(label, value) {
         return `<div class="info-group">
             <label>${label}</label>
             <div class="info-value">${value || '—'}</div>
         </div>`;
     }
-
+ 
     document.getElementById('personalGrid').innerHTML = [
         field('First Name', member.firstName),
         field('Last Name', member.lastName),
@@ -264,24 +283,24 @@ function renderViewAll(id) {
         field('Gender', member.gender),
         field('Contact No', member.contact),
     ].join('');
-
+ 
     const langDisplay = (member.languages || []).length
         ? member.languages.map((l, i) => `Language ${i + 1}: ${l}`).join(' | ')
         : '—';
-
+ 
     document.getElementById('professionalGrid').innerHTML = [
         field('Reporting Manager ID', member.reportingManagerId),
         field('Language Proficiency', langDisplay),
         field('Date of Joining', formatDate(member.dateJoining)),
     ].join('');
-
+ 
     document.getElementById('availabilityGrid').innerHTML = [
         field('Counter Number', `Counter ${member.counter}`),
         field('Current Shift', `${formatTime12(member.shiftStart)} - ${formatTime12(member.shiftEnd)}`),
     ].join('');
 }
-
-
+ 
+ 
 // ════════════════════════════════════════════════════════════
 // ADD STAFF PAGE
 // ════════════════════════════════════════════════════════════
@@ -290,21 +309,21 @@ function initAddPage() {
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('add_dob').max = today;
     document.getElementById('add_dateJoining').max = today;
-
+ 
     // Single-word fields
     ['add_firstName', 'add_lastName', 'add_reportingManagerId'].forEach(id => {
         enforceSingleWord(document.getElementById(id));
     });
-
+ 
     // Digits-only contact
     enforceDigits(document.getElementById('add_contact'), 10);
-
+ 
     // Language generation
     const langCountInput  = document.getElementById('add_languageCount');
     const langBoxesDiv    = document.getElementById('add_languageBoxes');
     const langCountHidden = document.getElementById('add_languageCountHidden');
     const generateBtn     = document.getElementById('add_generateLangBtn');
-
+ 
     generateBtn.addEventListener('click', () => {
         const count = parseInt(langCountInput.value);
         if (!count || count < 1 || count > 3) {
@@ -325,36 +344,36 @@ function initAddPage() {
             langBoxesDiv.appendChild(input);
         }
     });
-
+ 
     // Validation
     function validate() {
         let valid = true;
-
+ 
         ['add_firstName', 'add_lastName', 'add_reportingManagerId'].forEach(id => {
             const el = document.getElementById(id);
             const ok = el.value.trim() && /^[A-Za-z0-9]+$/.test(el.value.trim());
             setInvalid(el, !ok);
             if (!ok) valid = false;
         });
-
+ 
         const dob = document.getElementById('add_dob');
         setInvalid(dob, !dob.value);
         if (!dob.value) valid = false;
-
+ 
         const email = document.getElementById('add_email');
         const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
         setInvalid(email, !emailOk);
         if (!emailOk) valid = false;
-
+ 
         const gender = document.getElementById('add_gender');
         setInvalid(gender, !gender.value);
         if (!gender.value) valid = false;
-
+ 
         const contact = document.getElementById('add_contact');
         const contactOk = /^\d{10}$/.test(contact.value.trim());
         setInvalid(contact, !contactOk);
         if (!contactOk) valid = false;
-
+ 
         const count = parseInt(langCountHidden.value);
         if (!count || count < 1 || count > 3) {
             setInvalid(langCountInput, true);
@@ -368,43 +387,43 @@ function initAddPage() {
                 if (!ok) valid = false;
             }
         }
-
+ 
         const doj = document.getElementById('add_dateJoining');
         setInvalid(doj, !doj.value);
         if (!doj.value) valid = false;
-
+ 
         const counter = document.getElementById('add_counter');
         const counterOk = counter.value !== '' && parseInt(counter.value) >= 1;
         setInvalid(counter, !counterOk);
         if (!counterOk) valid = false;
-
+ 
         const start = document.getElementById('add_shiftStart');
         const end   = document.getElementById('add_shiftEnd');
         const shiftOk = start.value && end.value && start.value < end.value;
         setInvalid(start, !shiftOk);
         setInvalid(end,   !shiftOk);
         if (!shiftOk) valid = false;
-
+ 
         return valid;
     }
-
+ 
     // Submit
     form.addEventListener('submit', e => {
         e.preventDefault();
         form.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
-
+ 
         if (!validate()) {
             showToast('Please fix the highlighted fields.', 'error');
             return;
         }
-
+ 
         const count = parseInt(langCountHidden.value);
         const languages = [];
         for (let i = 1; i <= count; i++) {
             const box = langBoxesDiv.querySelector(`[name="add_language_${i}"]`);
             if (box) languages.push(box.value.trim());
         }
-
+ 
         const member = {
             firstName:          document.getElementById('add_firstName').value.trim(),
             lastName:           document.getElementById('add_lastName').value.trim(),
@@ -420,49 +439,49 @@ function initAddPage() {
             shiftStart:         document.getElementById('add_shiftStart').value,
             shiftEnd:           document.getElementById('add_shiftEnd').value,
         };
-
+ 
         StaffStore.add(member);
         showToast('Staff profile added successfully!');
         form.reset();
         langBoxesDiv.innerHTML = '';
         langCountHidden.value = '';
-
+ 
         setTimeout(() => { showPage('view'); }, 1500);
     });
-
+ 
     // Cancel
     document.getElementById('add_cancelBtn').addEventListener('click', () => {
         if (confirm('Discard changes and go back?')) showPage('view');
     });
 }
-
-
+ 
+ 
 // ════════════════════════════════════════════════════════════
 // EDIT STAFF PAGE
 // ════════════════════════════════════════════════════════════
 let _editCurrentStaffId = null;
-
+ 
 function initEditPage() {
     // Only wire up once — guard with a flag
     if (document.getElementById('editStaffForm')._editInited) return;
     document.getElementById('editStaffForm')._editInited = true;
-
+ 
     const form = document.getElementById('editStaffForm');
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('edit_dob').max = today;
     document.getElementById('edit_dateJoining').max = today;
-
+ 
     ['edit_firstName', 'edit_lastName', 'edit_reportingManagerId'].forEach(id => {
         enforceSingleWord(document.getElementById(id));
     });
     enforceDigits(document.getElementById('edit_contact'), 10);
-
+ 
     const langCountInput  = document.getElementById('edit_languageCount');
     const langBoxesDiv    = document.getElementById('edit_languageBoxes');
     const langCountHidden = document.getElementById('edit_languageCountHidden');
     const generateBtn     = document.getElementById('edit_generateLangBtn');
     const searchInput     = document.getElementById('editSearchInput');
-
+ 
     generateBtn.addEventListener('click', () => {
         const count = parseInt(langCountInput.value);
         if (!count || count < 1 || count > 3) {
@@ -473,7 +492,7 @@ function initEditPage() {
         langCountInput.classList.remove('invalid');
         buildEditLangBoxes(count);
     });
-
+ 
     // Search dropdown
     searchInput.addEventListener('input', () => {
         const q = searchInput.value.trim();
@@ -483,36 +502,36 @@ function initEditPage() {
     searchInput.addEventListener('blur', () => {
         setTimeout(removeDropdown, 150);
     });
-
+ 
     // Validate
     function validate() {
         let valid = true;
-
+ 
         ['edit_firstName', 'edit_lastName', 'edit_reportingManagerId'].forEach(id => {
             const el = document.getElementById(id);
             const ok = el.value.trim() && /^[A-Za-z0-9]+$/.test(el.value.trim());
             setInvalid(el, !ok);
             if (!ok) valid = false;
         });
-
+ 
         const dob = document.getElementById('edit_dob');
         setInvalid(dob, !dob.value);
         if (!dob.value) valid = false;
-
+ 
         const email = document.getElementById('edit_email');
         const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
         setInvalid(email, !emailOk);
         if (!emailOk) valid = false;
-
+ 
         const gender = document.getElementById('edit_gender');
         setInvalid(gender, !gender.value);
         if (!gender.value) valid = false;
-
+ 
         const contact = document.getElementById('edit_contact');
         const contactOk = /^\d{10}$/.test(contact.value.trim());
         setInvalid(contact, !contactOk);
         if (!contactOk) valid = false;
-
+ 
         const count = parseInt(langCountHidden.value);
         if (!count || count < 1 || count > 3) {
             setInvalid(langCountInput, true);
@@ -526,31 +545,31 @@ function initEditPage() {
                 if (!ok) valid = false;
             }
         }
-
+ 
         const doj = document.getElementById('edit_dateJoining');
         setInvalid(doj, !doj.value);
         if (!doj.value) valid = false;
-
+ 
         const counter = document.getElementById('edit_counter');
         const counterOk = counter.value !== '' && parseInt(counter.value) >= 1;
         setInvalid(counter, !counterOk);
         if (!counterOk) valid = false;
-
+ 
         const start = document.getElementById('edit_shiftStart');
         const end   = document.getElementById('edit_shiftEnd');
         const shiftOk = start.value && end.value && start.value < end.value;
         setInvalid(start, !shiftOk);
         setInvalid(end,   !shiftOk);
         if (!shiftOk) valid = false;
-
+ 
         return valid;
     }
-
+ 
     // Submit
     form.addEventListener('submit', e => {
         e.preventDefault();
         form.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
-
+ 
         if (!_editCurrentStaffId) {
             showToast('Please search and select a staff member first.', 'error');
             searchInput.focus();
@@ -560,14 +579,14 @@ function initEditPage() {
             showToast('Please fix the highlighted fields.', 'error');
             return;
         }
-
+ 
         const count = parseInt(langCountHidden.value);
         const languages = [];
         for (let i = 1; i <= count; i++) {
             const box = langBoxesDiv.querySelector(`[name="edit_language_${i}"]`);
             if (box) languages.push(box.value.trim());
         }
-
+ 
         const updates = {
             firstName:          document.getElementById('edit_firstName').value.trim(),
             lastName:           document.getElementById('edit_lastName').value.trim(),
@@ -583,7 +602,7 @@ function initEditPage() {
             shiftStart:         document.getElementById('edit_shiftStart').value,
             shiftEnd:           document.getElementById('edit_shiftEnd').value,
         };
-
+ 
         const ok = StaffStore.update(_editCurrentStaffId, updates);
         if (ok) {
             showToast('Staff profile updated successfully!');
@@ -592,13 +611,13 @@ function initEditPage() {
             showToast('Update failed. Staff not found.', 'error');
         }
     });
-
+ 
     // Cancel
     document.getElementById('edit_cancelBtn').addEventListener('click', () => {
         if (confirm('Discard changes and go back?')) showPage('view');
     });
 }
-
+ 
 function buildEditLangBoxes(count, existingValues = []) {
     const langBoxesDiv    = document.getElementById('edit_languageBoxes');
     const langCountHidden = document.getElementById('edit_languageCountHidden');
@@ -615,7 +634,7 @@ function buildEditLangBoxes(count, existingValues = []) {
         langBoxesDiv.appendChild(input);
     }
 }
-
+ 
 function populateEditForm(member) {
     document.getElementById('edit_firstName').value          = member.firstName || '';
     document.getElementById('edit_lastName').value           = member.lastName  || '';
@@ -628,26 +647,26 @@ function populateEditForm(member) {
     document.getElementById('edit_counter').value            = member.counter   || '';
     document.getElementById('edit_shiftStart').value         = member.shiftStart || '';
     document.getElementById('edit_shiftEnd').value           = member.shiftEnd  || '';
-
+ 
     const count = member.languageCount || (member.languages || []).length || 1;
     document.getElementById('edit_languageCount').value = count;
     buildEditLangBoxes(count, member.languages || []);
-
+ 
     _editCurrentStaffId = member.id;
 }
-
+ 
 function removeDropdown() {
     const d = document.getElementById('mb-dropdown');
     if (d) d.remove();
 }
-
+ 
 function buildDropdown(members) {
     removeDropdown();
     if (!members.length) return;
-
+ 
     const searchBox = document.getElementById('editSearchInput').closest('.search-box');
     searchBox.style.position = 'relative';
-
+ 
     const dropdown = document.createElement('ul');
     dropdown.id = 'mb-dropdown';
     Object.assign(dropdown.style, {
@@ -657,7 +676,7 @@ function buildDropdown(members) {
         zIndex: '100', boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
         maxHeight: '200px', overflowY: 'auto',
     });
-
+ 
     members.forEach(m => {
         const li = document.createElement('li');
         li.textContent = StaffStore.fullName(m);
@@ -676,11 +695,11 @@ function buildDropdown(members) {
         });
         dropdown.appendChild(li);
     });
-
+ 
     searchBox.appendChild(dropdown);
 }
-
-
+ 
+ 
 // ════════════════════════════════════════════════════════════
 // INIT
 // ════════════════════════════════════════════════════════════
@@ -688,11 +707,12 @@ document.addEventListener('DOMContentLoaded', () => {
     initViewPage();
     initAddPage();
     // Edit page init is deferred to showPage('edit') call to avoid re-init issues
-
+ 
     // Set max dates for add form (edit form uses lazy init)
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('add_dob').max = today;
     document.getElementById('add_dateJoining').max = today;
-
+ 
     lucide.createIcons();
 });
+ 

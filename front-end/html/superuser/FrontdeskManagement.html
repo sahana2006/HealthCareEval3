@@ -8,19 +8,34 @@
     <link rel="stylesheet" href="../../css/superuser/components/header.css">
     <link rel="stylesheet" href="../../css/superuser/FrontdeskManagement.css">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .delete-btn {
+            background-color: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 0.35rem;
+            padding: 0.3rem 0.85rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-family: inherit;
+        }
+        .delete-btn:hover { background-color: #b91c1c; }
+    </style>
 </head>
 <body>
 <div class="container">
     <!-- SIDEBAR -->
     <div id="sidebar-slot"></div>
-
+ 
     <!-- MAIN CONTENT -->
     <div class="main-content">
         
         <div id="header-slot"></div>
-
+ 
         <main class="content">
-
+ 
             <!-- ===== PAGE: VIEW STAFF ===== -->
             <div id="page-view" class="page active">
                 <div class="quick-actions-card">
@@ -31,14 +46,14 @@
                         <button class="action-btn" onclick="showPage('edit')"><i data-lucide="edit"></i><span>Edit Staff Profile</span></button>
                     </div>
                 </div>
-
+ 
                 <div class="search-container">
                     <div class="search-box">
                         <i data-lucide="search"></i>
                         <input type="text" placeholder="Search Staff by Name" class="search-input" id="viewSearchInput">
                     </div>
                 </div>
-
+ 
                 <div class="table-container">
                     <h3 class="table-title">Staff Details</h3>
                     <table class="staff-table">
@@ -56,7 +71,7 @@
                     </table>
                 </div>
             </div>
-
+ 
             <!-- ===== PAGE: VIEW ALL (DETAIL VIEW) ===== -->
             <div id="page-viewall" class="page">
                 <div class="quick-actions-card">
@@ -67,30 +82,30 @@
                         <button class="action-btn" id="viewAllEditBtn" onclick="goEditFromView()"><i data-lucide="edit"></i><span>Edit Staff Profile</span></button>
                     </div>
                 </div>
-
+ 
                 <div class="profile-container">
                     <div class="profile-header">
                         <button class="back-btn" onclick="showPage('view')"><i data-lucide="chevron-left"></i></button>
                         <h3 class="profile-title" id="profileTitle">Staff Details</h3>
                     </div>
-
+ 
                     <div class="info-section">
                         <h4 class="info-section-title">Personal Information</h4>
                         <div class="info-grid" id="personalGrid"></div>
                     </div>
-
+ 
                     <div class="info-section">
                         <h4 class="info-section-title">Professional Details</h4>
                         <div class="info-grid" id="professionalGrid"></div>
                     </div>
-
+ 
                     <div class="info-section">
                         <h4 class="info-section-title">Availability Details</h4>
                         <div class="info-grid" id="availabilityGrid"></div>
                     </div>
                 </div>
             </div>
-
+ 
             <!-- ===== PAGE: ADD STAFF ===== -->
             <div id="page-add" class="page">
                 <div class="quick-actions-card">
@@ -101,11 +116,11 @@
                         <button class="action-btn" onclick="showPage('edit')"><i data-lucide="edit"></i><span>Edit Staff Profile</span></button>
                     </div>
                 </div>
-
+ 
                 <div class="form-container">
                     <h3 class="form-title">Add New Staff Profile</h3>
                     <form id="addStaffForm" novalidate>
-
+ 
                         <div class="form-section">
                             <h4 class="form-section-title">Personal Information</h4>
                             <div class="form-grid">
@@ -142,7 +157,7 @@
                                 </div>
                             </div>
                         </div>
-
+ 
                         <div class="form-section">
                             <h4 class="form-section-title">Professional Details</h4>
                             <div class="form-grid">
@@ -167,7 +182,7 @@
                                 </div>
                             </div>
                         </div>
-
+ 
                         <div class="form-section">
                             <h4 class="form-section-title">Availability Details</h4>
                             <div class="form-grid">
@@ -192,7 +207,7 @@
                                 </div>
                             </div>
                         </div>
-
+ 
                         <div class="form-actions">
                             <button type="submit" class="btn btn-save">Save</button>
                             <button type="button" class="btn btn-cancel" id="add_cancelBtn">Cancel</button>
@@ -200,7 +215,7 @@
                     </form>
                 </div>
             </div>
-
+ 
             <!-- ===== PAGE: EDIT STAFF ===== -->
             <div id="page-edit" class="page">
                 <div class="quick-actions-card">
@@ -211,7 +226,7 @@
                         <button class="action-btn action-btn-active" onclick="showPage('edit')"><i data-lucide="edit"></i><span>Edit Staff Profile</span></button>
                     </div>
                 </div>
-
+ 
                 <div class="form-container">
                     <div class="form-header">
                         <h3 class="form-title">Edit Staff Profile</h3>
@@ -220,9 +235,9 @@
                             <input type="text" placeholder="Search staff name..." class="search-input" id="editSearchInput" autocomplete="off">
                         </div>
                     </div>
-
+ 
                     <form id="editStaffForm" novalidate>
-
+ 
                         <div class="form-section">
                             <h4 class="form-section-title">Personal Information</h4>
                             <div class="form-grid">
@@ -259,7 +274,7 @@
                                 </div>
                             </div>
                         </div>
-
+ 
                         <div class="form-section">
                             <h4 class="form-section-title">Professional Details</h4>
                             <div class="form-grid">
@@ -284,7 +299,7 @@
                                 </div>
                             </div>
                         </div>
-
+ 
                         <div class="form-section">
                             <h4 class="form-section-title">Availability Details</h4>
                             <div class="form-grid">
@@ -309,7 +324,7 @@
                                 </div>
                             </div>
                         </div>
-
+ 
                         <div class="form-actions">
                             <button type="submit" class="btn btn-save">Save</button>
                             <button type="button" class="btn btn-cancel" id="edit_cancelBtn">Cancel</button>
@@ -317,11 +332,11 @@
                     </form>
                 </div>
             </div>
-
+ 
         </main>
     </div>
 </div>
-
+ 
 <script>lucide.createIcons();</script>
 <script src="../../js/superuser/FrontdeskManagement.js"></script>
 <script>
@@ -330,13 +345,13 @@ Promise.all([
   fetch('./components/header.html').then(r => r.text())
 ])
 .then(([sidebarHtml, headerHtml]) => {
-
+ 
   // Inject sidebar
   document.getElementById('sidebar-slot').innerHTML = sidebarHtml;
-
+ 
   // Inject header
   document.getElementById('header-slot').innerHTML = headerHtml;
-
+ 
   // Active sidebar logic
   const pageMap = {
     'admindashboard.html': 'dashboard',
@@ -344,15 +359,15 @@ Promise.all([
     'frontdeskmanagement.html': 'frontdesk',
     'doctorleavemanagement.html': 'leave'
   };
-
+ 
   const currentPage = location.pathname.split('/').pop().toLowerCase();
   const activeKey = pageMap[currentPage];
-
+ 
   if (activeKey) {
     const activeLink = document.querySelector(`[data-nav="${activeKey}"]`);
     if (activeLink) activeLink.classList.add('active');
   }
-
+ 
   // Load icons AFTER HTML injection
   lucide.createIcons();
 })
@@ -360,3 +375,4 @@ Promise.all([
 </script>
 </body>
 </html>
+ 

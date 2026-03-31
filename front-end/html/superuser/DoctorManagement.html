@@ -8,17 +8,32 @@
     <link rel="stylesheet" href="../../css/superuser/components/header.css">
     <link rel="stylesheet" href="../../css/superuser/DoctorManagement.css">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .delete-btn {
+            background-color: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 0.35rem;
+            padding: 0.3rem 0.85rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-family: inherit;
+        }
+        .delete-btn:hover { background-color: #b91c1c; }
+    </style>
 </head>
 <body>
     <div class="container">
         <!-- Sidebar -->
         <div id="sidebar-slot"></div>
-
+ 
         <!-- Main Content -->
         <div class="main-content">
             <!-- Header -->
             <div id="header-slot"></div>
-
+ 
             <!-- ═══════════════════════════════════════ -->
             <!-- PAGE: VIEW DOCTOR                       -->
             <!-- ═══════════════════════════════════════ -->
@@ -37,12 +52,12 @@
                         </button>
                     </div>
                 </div>
-
+ 
                 <div class="search-container">
                     <i data-lucide="search"></i>
                     <input type="text" placeholder="Search Doctor by Name" class="search-input" id="view-search-input">
                 </div>
-
+ 
                 <div class="table-container">
                     <h3 class="table-title">Doctors Details</h3>
                     <table class="doctors-table">
@@ -59,7 +74,7 @@
                     </table>
                 </div>
             </main>
-
+ 
             <!-- ═══════════════════════════════════════ -->
             <!-- PAGE: VIEW ALL DOCTOR (detail view)     -->
             <!-- ═══════════════════════════════════════ -->
@@ -78,7 +93,7 @@
                         </button>
                     </div>
                 </div>
-
+ 
                 <div class="details-container">
                     <div class="details-header">
                         <button class="back-btn" id="back-to-list-btn">
@@ -86,19 +101,19 @@
                         </button>
                         <h3 class="details-title" id="detail-title">All Details</h3>
                     </div>
-
+ 
                     <!-- Personal Information -->
                     <div class="info-section">
                         <h4 class="info-section-title">Personal Information</h4>
                         <div class="info-grid" id="detail-personal"></div>
                     </div>
-
+ 
                     <!-- Employment Details -->
                     <div class="info-section">
                         <h4 class="info-section-title">Employment Details</h4>
                         <div class="info-grid" id="detail-employment"></div>
                     </div>
-
+ 
                     <!-- Availability Details -->
                     <div class="info-section">
                         <h4 class="info-section-title">Availability Details</h4>
@@ -106,7 +121,7 @@
                     </div>
                 </div>
             </main>
-
+ 
             <!-- ═══════════════════════════════════════ -->
             <!-- PAGE: ADD DOCTOR                        -->
             <!-- ═══════════════════════════════════════ -->
@@ -125,11 +140,11 @@
                         </button>
                     </div>
                 </div>
-
+ 
                 <div class="form-container">
                     <h3 class="form-title">Add New Doctor Profile</h3>
                     <form id="addDoctorForm" novalidate>
-
+ 
                         <div class="form-section">
                             <h4 class="form-section-title">Personal Information</h4>
                             <div class="form-grid">
@@ -166,7 +181,7 @@
                                 </div>
                             </div>
                         </div>
-
+ 
                         <div class="form-section">
                             <h4 class="form-section-title">Professional Details</h4>
                             <div class="form-grid">
@@ -192,7 +207,7 @@
                                 </div>
                             </div>
                         </div>
-
+ 
                         <div class="form-section">
                             <h4 class="form-section-title">Availability Details</h4>
                             <div class="form-grid">
@@ -223,7 +238,7 @@
                                 </div>
                             </div>
                         </div>
-
+ 
                         <div class="form-actions">
                             <button type="submit" class="btn btn-save">Save</button>
                             <button type="button" class="btn btn-cancel" id="add-cancel-btn">Cancel</button>
@@ -231,7 +246,7 @@
                     </form>
                 </div>
             </main>
-
+ 
             <!-- ═══════════════════════════════════════ -->
             <!-- PAGE: EDIT DOCTOR                       -->
             <!-- ═══════════════════════════════════════ -->
@@ -250,7 +265,7 @@
                         </button>
                     </div>
                 </div>
-
+ 
                 <div class="form-container">
                     <div class="form-header">
                         <h3 class="form-title">Edit Doctor Profile</h3>
@@ -259,9 +274,9 @@
                             <input type="text" placeholder="Search doctor name..." class="search-input" id="edit-search-input" autocomplete="off">
                         </div>
                     </div>
-
+ 
                     <form id="editDoctorForm" novalidate>
-
+ 
                         <div class="form-section">
                             <h4 class="form-section-title">Personal Information</h4>
                             <div class="form-grid">
@@ -298,7 +313,7 @@
                                 </div>
                             </div>
                         </div>
-
+ 
                         <div class="form-section">
                             <h4 class="form-section-title">Employment Details</h4>
                             <div class="form-grid">
@@ -324,7 +339,7 @@
                                 </div>
                             </div>
                         </div>
-
+ 
                         <div class="form-section">
                             <h4 class="form-section-title">Availability Details</h4>
                             <div class="form-grid">
@@ -355,7 +370,7 @@
                                 </div>
                             </div>
                         </div>
-
+ 
                         <div class="form-actions">
                             <button type="submit" class="btn btn-save">Save</button>
                             <button type="button" class="btn btn-cancel" id="edit-cancel-btn">Cancel</button>
@@ -363,10 +378,10 @@
                     </form>
                 </div>
             </main>
-
+ 
         </div><!-- /main-content -->
     </div><!-- /container -->
-
+ 
     <script>lucide.createIcons();</script>
     <script src="../../js/superuser/DoctorManagement.js"></script>
     <script>
@@ -375,13 +390,13 @@ Promise.all([
   fetch('./components/header.html').then(r => r.text())
 ])
 .then(([sidebarHtml, headerHtml]) => {
-
+ 
   // Inject sidebar
   document.getElementById('sidebar-slot').innerHTML = sidebarHtml;
-
+ 
   // Inject header
   document.getElementById('header-slot').innerHTML = headerHtml;
-
+ 
   // Active sidebar logic
   const pageMap = {
     'admindashboard.html': 'dashboard',
@@ -389,15 +404,15 @@ Promise.all([
     'frontdeskmanagement.html': 'frontdesk',
     'doctorleavemanagement.html': 'leave'
   };
-
+ 
   const currentPage = location.pathname.split('/').pop().toLowerCase();
   const activeKey = pageMap[currentPage];
-
+ 
   if (activeKey) {
     const activeLink = document.querySelector(`[data-nav="${activeKey}"]`);
     if (activeLink) activeLink.classList.add('active');
   }
-
+ 
   // Load icons AFTER HTML injection
   lucide.createIcons();
 })
