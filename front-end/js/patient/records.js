@@ -120,12 +120,22 @@ function deleteRecord(id) {
 // ── FOLLOW-UP ─────────────────────────────────────────────────────
 
 function openFollowUp(id) {
-  const r = DB.medicalRecords.find(x => x.id === id);
-  setText('fu-label', 'For: ' + r.title + ' with ' + r.doctor);
-  document.getElementById('fu-date').value = '';
-  document.getElementById('fu-date').min   = today();
-  document.getElementById('fu-id').value   = id;
-  openModal(document.getElementById('tpl-followUp').innerHTML);
+  const r = DB.medicalRecords.find((x) => x.id === id);
+
+  // 1. Open modal first
+  openModal(document.getElementById("tpl-followUp").innerHTML);
+
+  // 2. Then access elements inside modal
+  const modal = document.getElementById("modalContent");
+
+  modal.querySelector("#fu-label").textContent =
+    "For: " + r.title + " with " + r.doctor;
+
+  const dateInput = modal.querySelector("#fu-date");
+  dateInput.value = "";
+  dateInput.min = today();
+
+  modal.querySelector("#fu-id").value = id;
 }
 
 function bookFollowUp() {
