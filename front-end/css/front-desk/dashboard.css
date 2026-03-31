@@ -1,8 +1,7 @@
 /* ============================================================
-   DASHBOARD.CSS — Dashboard page styles
+   DASHBOARD.CSS - Dashboard page styles
    ============================================================ */
 
-/* Welcome Banner */
 .welcome-banner {
   background: var(--color-primary-bg);
   border-radius: var(--radius-lg);
@@ -21,11 +20,10 @@
 }
 
 .welcome-subtitle {
-  color: rgba(255,255,255,0.8);
+  color: rgba(255, 255, 255, 0.8);
   font-size: 14px;
 }
 
-/* Stats Grid */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -69,11 +67,6 @@
   color: var(--color-warning);
 }
 
-.stat-icon--green {
-  background: var(--color-accent-green-bg);
-  color: var(--color-success);
-}
-
 .stat-value {
   font-family: var(--font-heading);
   font-size: 26px;
@@ -88,7 +81,6 @@
   margin-top: 2px;
 }
 
-/* Quick Actions */
 .quick-actions-card {
   margin-bottom: var(--space-6);
 }
@@ -126,7 +118,7 @@
 
 .quick-action--pink {
   background: var(--color-accent-pink-bg);
-  color: #BE185D;
+  color: #be185d;
 }
 
 .quick-action--blue {
@@ -134,14 +126,6 @@
   color: var(--color-info);
 }
 
-/* Dashboard Bottom */
-.dashboard-bottom {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-6);
-}
-
-/* Queue Card */
 .queue-columns {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -202,49 +186,4 @@
 .queue-item--consulting {
   background: var(--color-accent-blue-bg);
   border-color: var(--color-accent-blue);
-}
-
-/* Right Column */
-.right-col {
-  display: flex;
-  flex-direction: column;
-}
-
-.reg-section-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  margin-bottom: var(--space-3);
-}
-
-.reg-item {
-  background: var(--color-primary-xlight);
-  border-radius: var(--radius-md);
-  padding: var(--space-3) var(--space-4);
-  font-size: 13px;
-}
-
-.reg-item + .reg-item {
-  margin-top: var(--space-2);
-}
-
-.reg-item-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 2px;
-}
-
-.reg-item-label {
-  color: var(--color-text-secondary);
-  min-width: 110px;
-}
-
-.reg-item-value {
-  font-weight: 500;
-  color: var(--color-text-primary);
-  text-align: right;
-}
-
-.billing-item {
-  background: var(--color-accent-pink-bg);
 }

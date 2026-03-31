@@ -3,13 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard — MEDBITS Frontdesk</title>
+    <title>Dashboard - MEDBITS Frontdesk</title>
     <link rel="stylesheet" href="../../css/front-desk/base.css" />
     <link rel="stylesheet" href="../../css/front-desk/dashboard.css" />
   </head>
   <body>
     <div class="app-layout">
-      <!-- Sidebar -->
       <aside class="sidebar">
         <div class="sidebar-logo">
           <span class="sidebar-logo-text">MEDBITS</span>
@@ -17,7 +16,6 @@
         <nav class="sidebar-nav" id="sidebar-nav"></nav>
       </aside>
 
-      <!-- Topbar -->
       <header class="topbar">
         <div class="topbar-title">
           <h1 id="topbar-title-h1">Dashboard</h1>
@@ -25,67 +23,39 @@
         </div>
         <div class="topbar-right">
           <div class="topbar-bell" title="Notifications">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
               <path d="M13.73 21a2 2 0 0 1-3.46 0" />
             </svg>
           </div>
           <div class="topbar-user">
             <div class="topbar-user-icon">
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="2" y="3" width="20" height="14" rx="2" />
                 <line x1="8" y1="21" x2="16" y2="21" />
                 <line x1="12" y1="17" x2="12" y2="21" />
               </svg>
             </div>
             <div class="topbar-user-info">
-              <span class="topbar-user-name" id="topbar-username"
-                >Sarah Williams</span
-              >
+              <span class="topbar-user-name" id="topbar-username">Sarah Williams</span>
               <span class="topbar-user-role">Frontdesk</span>
             </div>
           </div>
         </div>
       </header>
 
-      <!-- Main Content -->
       <main class="main-content">
-        <!-- Welcome Banner -->
         <div class="welcome-banner">
           <div>
             <h2 class="welcome-title">Welcome, Sarah!</h2>
-            <p class="welcome-subtitle">
-              Manage patient flow and administrative tasks efficiently
-            </p>
+            <p class="welcome-subtitle">Manage patient flow and administrative tasks efficiently</p>
           </div>
         </div>
 
-        <!-- Stats Row -->
         <div class="stats-grid">
           <div class="stat-card">
             <div class="stat-icon stat-icon--purple">
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                 <circle cx="9" cy="7" r="4" />
                 <line x1="23" y1="11" x2="17" y2="11" />
@@ -99,14 +69,7 @@
           </div>
           <div class="stat-card">
             <div class="stat-icon stat-icon--blue">
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="4" width="18" height="18" rx="2" />
                 <line x1="16" y1="2" x2="16" y2="6" />
                 <line x1="8" y1="2" x2="8" y2="6" />
@@ -120,14 +83,7 @@
           </div>
           <div class="stat-card">
             <div class="stat-icon stat-icon--yellow">
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                 <circle cx="9" cy="7" r="4" />
                 <circle cx="23" cy="15" r="4" />
@@ -140,21 +96,11 @@
           </div>
         </div>
 
-        <!-- Quick Actions -->
         <div class="card quick-actions-card">
-          <div class="section-title" style="margin-bottom: var(--space-4)">
-            Quick Actions
-          </div>
+          <div class="section-title" style="margin-bottom: var(--space-4)">Quick Actions</div>
           <div class="quick-actions-grid">
             <a href="walkin.html" class="quick-action quick-action--purple">
-              <svg
-                width="28"
-                height="28"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                 <circle cx="9" cy="7" r="4" />
                 <line x1="23" y1="11" x2="17" y2="11" />
@@ -163,14 +109,7 @@
               <span>Register Walk-in</span>
             </a>
             <a href="queue.html" class="quick-action quick-action--pink">
-              <svg
-                width="28"
-                height="28"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                 <circle cx="9" cy="7" r="4" />
                 <circle cx="23" cy="15" r="4" />
@@ -178,14 +117,7 @@
               <span>Manage Queue</span>
             </a>
             <a href="appointments.html" class="quick-action quick-action--blue">
-              <svg
-                width="28"
-                height="28"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                 <circle cx="9" cy="7" r="4" />
                 <line x1="19" y1="8" x2="19" y2="14" />
@@ -196,55 +128,22 @@
           </div>
         </div>
 
-        <!-- Bottom Row -->
-        <div class="dashboard-bottom">
-          <!-- Current Queue -->
-          <div class="card queue-card">
-            <div class="section-header">
-              <span class="section-title">Current Queue</span>
+        <div class="card queue-card">
+          <div class="section-header">
+            <span class="section-title">Current Queue</span>
+          </div>
+          <div class="queue-columns">
+            <div class="queue-col">
+              <div class="queue-col-header queue-waiting">Waiting</div>
+              <div id="queue-waiting-list" class="queue-list"></div>
             </div>
-            <div class="queue-columns">
-              <div class="queue-col">
-                <div class="queue-col-header queue-waiting">Waiting</div>
-                <div id="queue-waiting-list" class="queue-list"></div>
-              </div>
-              <div class="queue-col">
-                <div class="queue-col-header queue-consulting">
-                  In consultation
-                </div>
-                <div id="queue-consulting-list" class="queue-list"></div>
-              </div>
-            </div>
-            <div style="margin-top: var(--space-4); text-align: center">
-              <a href="queue.html" class="btn-view-all">View all</a>
+            <div class="queue-col">
+              <div class="queue-col-header queue-consulting">In consultation</div>
+              <div id="queue-consulting-list" class="queue-list"></div>
             </div>
           </div>
-
-          <!-- Registrations & Billings -->
-          <div class="right-col">
-            <!-- Recent Registrations -->
-            <div class="card">
-              <div class="section-header">
-                <span class="section-title"
-                  >Recent Registrations And Billings</span
-                >
-              </div>
-              <div class="reg-section">
-                <div class="reg-section-title">Walk-In patient Registered</div>
-                <div id="recent-registrations" class="reg-list"></div>
-                <div style="text-align: right; margin-top: var(--space-3)">
-                  <a href="walkin.html" class="btn-view-all">View all</a>
-                </div>
-              </div>
-              <div class="divider"></div>
-              <div class="reg-section">
-                <div class="reg-section-title">Recent Billing</div>
-                <div id="recent-billing" class="reg-list"></div>
-                <div style="text-align: right; margin-top: var(--space-3)">
-                  <a href="#" class="btn-view-all">View all</a>
-                </div>
-              </div>
-            </div>
+          <div style="margin-top: var(--space-4); text-align: center">
+            <a href="queue.html" class="btn-view-all">View all</a>
           </div>
         </div>
       </main>

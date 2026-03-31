@@ -3,13 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Walk-in Registration — MEDBITS Frontdesk</title>
+    <title>Walk-in Registration - MEDBITS Frontdesk</title>
     <link rel="stylesheet" href="../../css/front-desk/base.css" />
     <link rel="stylesheet" href="../../css/front-desk/walkin.css" />
   </head>
   <body>
     <div class="app-layout">
-      <!-- Sidebar -->
       <aside class="sidebar">
         <div class="sidebar-logo">
           <span class="sidebar-logo-text">MEDBITS</span>
@@ -17,7 +16,6 @@
         <nav class="sidebar-nav" id="sidebar-nav"></nav>
       </aside>
 
-      <!-- Topbar -->
       <header class="topbar">
         <div class="topbar-title">
           <h1 id="topbar-title-h1">Walk-in Registration</h1>
@@ -25,136 +23,67 @@
         </div>
         <div class="topbar-right">
           <div class="topbar-bell" title="Notifications">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
               <path d="M13.73 21a2 2 0 0 1-3.46 0" />
             </svg>
           </div>
           <div class="topbar-user">
             <div class="topbar-user-icon">
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="2" y="3" width="20" height="14" rx="2" />
                 <line x1="8" y1="21" x2="16" y2="21" />
                 <line x1="12" y1="17" x2="12" y2="21" />
               </svg>
             </div>
             <div class="topbar-user-info">
-              <span class="topbar-user-name" id="topbar-username"
-                >Sarah Williams</span
-              >
+              <span class="topbar-user-name" id="topbar-username">Sarah Williams</span>
               <span class="topbar-user-role">Frontdesk</span>
             </div>
           </div>
         </div>
       </header>
 
-      <!-- Main Content -->
       <main class="main-content">
         <div class="card walkin-card">
-          <!-- Search Existing Patient -->
           <div class="search-bar" style="margin-bottom: var(--space-6)">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="11" cy="11" r="8" />
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
-            <input
-              type="text"
-              id="patient-search"
-              placeholder="Search Patient..."
-              autocomplete="off"
-            />
+            <input type="text" id="patient-search" placeholder="Search Patient..." autocomplete="off" />
           </div>
 
-          <!-- Search Results Dropdown -->
           <div id="search-results" class="search-results hidden"></div>
 
-          <!-- New Registration Form -->
           <h2 class="reg-form-title">New Registration</h2>
 
           <div class="form-grid">
-            <!-- First Name -->
             <div class="form-group">
               <label class="form-label" for="first-name">First Name</label>
-              <input
-                class="input-field"
-                type="text"
-                id="first-name"
-                placeholder="Enter First Name"
-                autocomplete="off"
-              />
+              <input class="input-field" type="text" id="first-name" placeholder="Enter First Name" autocomplete="off" />
               <span class="form-error" id="err-first-name"></span>
             </div>
-            <!-- Last Name -->
             <div class="form-group">
               <label class="form-label" for="last-name">Last Name</label>
-              <input
-                class="input-field"
-                type="text"
-                id="last-name"
-                placeholder="Enter your Last Name"
-                autocomplete="off"
-              />
+              <input class="input-field" type="text" id="last-name" placeholder="Enter your Last Name" autocomplete="off" />
               <span class="form-error" id="err-last-name"></span>
             </div>
-            <!-- Email -->
             <div class="form-group">
               <label class="form-label" for="email">Email</label>
-              <input
-                class="input-field"
-                type="email"
-                id="email"
-                placeholder="your.email@example.com"
-                autocomplete="off"
-              />
+              <input class="input-field" type="email" id="email" placeholder="your.email@example.com" autocomplete="off" />
               <span class="form-error" id="err-email"></span>
             </div>
-            <!-- Phone -->
             <div class="form-group">
               <label class="form-label" for="phone">Phone Number</label>
-              <input
-                class="input-field"
-                type="tel"
-                id="phone"
-                placeholder="10 digit phone number"
-                maxlength="10"
-                autocomplete="off"
-              />
+              <input class="input-field" type="tel" id="phone" placeholder="10 digit phone number" maxlength="10" autocomplete="off" />
               <span class="form-error" id="err-phone"></span>
             </div>
-            <!-- DOB -->
             <div class="form-group">
               <label class="form-label" for="dob">Date Of Birth</label>
-              <input
-                class="input-field"
-                type="text"
-                id="dob"
-                placeholder="dd-mm-yyyy"
-                autocomplete="off"
-              />
+              <input class="input-field" type="text" id="dob" placeholder="dd-mm-yyyy" autocomplete="off" />
               <span class="form-error" id="err-dob"></span>
             </div>
-            <!-- Gender -->
             <div class="form-group">
               <label class="form-label" for="gender">Gender</label>
               <select class="input-field" id="gender">
@@ -165,7 +94,6 @@
               </select>
               <span class="form-error" id="err-gender"></span>
             </div>
-            <!-- Blood Group -->
             <div class="form-group">
               <label class="form-label" for="blood-group">Blood Group</label>
               <select class="input-field" id="blood-group">
@@ -181,57 +109,73 @@
               </select>
               <span class="form-error" id="err-blood-group"></span>
             </div>
-            <!-- Guardian -->
             <div class="form-group">
               <label class="form-label" for="guardian">Guardian Name</label>
-              <input
-                class="input-field"
-                type="text"
-                id="guardian"
-                placeholder="Enter your Guardian Name"
-                autocomplete="off"
-              />
+              <input class="input-field" type="text" id="guardian" placeholder="Enter your Guardian Name" autocomplete="off" />
             </div>
           </div>
 
-          <!-- Register Button -->
           <div class="reg-btn-wrapper">
-            <button class="btn btn-primary reg-submit-btn" id="register-btn">
-              Register
-            </button>
+            <button class="btn btn-primary reg-submit-btn" id="register-btn">Register</button>
           </div>
+        </div>
+
+        <div class="card recent-registrations-card">
+          <div class="section-header">
+            <span class="section-title">Recent Registrations</span>
+            <a href="#" class="btn-view-all" id="view-all-registrations-btn">View all</a>
+          </div>
+          <div id="recent-registrations-list" class="recent-reg-list"></div>
         </div>
       </main>
     </div>
 
-    <!-- Success Modal -->
     <div class="modal-overlay hidden" id="success-modal">
-      <div class="modal">
+      <div class="modal walkin-modal">
         <div class="modal-header">
           <span class="modal-title">Patient Registered!</span>
           <button class="modal-close" id="close-success-modal">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-            >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           </button>
         </div>
         <div class="modal-success-body" id="modal-success-body"></div>
-        <div
-          style="display: flex; gap: var(--space-3); margin-top: var(--space-6)"
-        >
-          <button class="btn btn-primary" id="modal-book-appointment">
-            Book Appointment
-          </button>
+        <div style="display: flex; gap: var(--space-3); margin-top: var(--space-6)">
+          <button class="btn btn-primary" id="modal-book-appointment">Book Appointment</button>
           <button class="btn btn-outline" id="modal-close-btn">Close</button>
         </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay hidden" id="registration-list-modal">
+      <div class="modal walkin-modal">
+        <div class="modal-header">
+          <span class="modal-title">All Recent Registrations</span>
+          <button class="modal-close" data-close-modal="registration-list-modal">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div id="registration-list-modal-body" class="walkin-modal-list"></div>
+      </div>
+    </div>
+
+    <div class="modal-overlay hidden" id="registration-detail-modal">
+      <div class="modal walkin-modal">
+        <div class="modal-header">
+          <span class="modal-title">Registration Details</span>
+          <button class="modal-close" data-close-modal="registration-detail-modal">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div id="registration-detail-body" class="modal-success-body"></div>
       </div>
     </div>
 

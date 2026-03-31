@@ -4,6 +4,7 @@
 
 let followUps = [];
 let selectedFollowUpId = null;
+let selectedFollowUpTime = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
   renderShell('followup');
@@ -87,6 +88,8 @@ function openFollowUpModal(id) {
   const fu = followUps.find(f => f.id === id);
   if (!fu) return;
   selectedFollowUpId = id;
+  selectedFollowUpTime = null;
+  const suggestedDateValue = convertDisplayDateToInput(fu.suggestedDate);
 
   document.getElementById('followup-modal-body').innerHTML = `
     <div class="followup-modal-info">
@@ -105,9 +108,20 @@ function openFollowUpModal(id) {
     </div>
     <div class="form-group">
       <label class="form-label">Confirm Appointment Date</label>
-      <input class="input-field" type="text" id="followup-confirm-date" 
-             value="${fu.suggestedDate}" placeholder="e.g. March 15, 2026"/>
+      <input class="input-field" type="date" id="followup-confirm-date" 
+             value="${suggestedDateValue}" />
       <span class="form-error" id="err-followup-date"></span>
+    </div>
+    <div class="form-group" style="margin-top: var(--space-3);">
+      <label class="form-label">Select Time Slot</label>
+      <div class="followup-slot-grid" id="followup-slot-grid">
+        ${getFollowUpTimeSlots().map(slot => `
+          <button type="button" class="followup-slot-btn" data-time="${slot}">
+            ${slot}
+          </button>
+        `).join('')}
+      </div>
+      <span class="form-error" id="err-followup-time"></span>
     </div>
     <div class="form-group" style="margin-top: var(--space-3);">
       <label class="form-label">Notes (Optional)</label>
@@ -115,17 +129,40 @@ function openFollowUpModal(id) {
     </div>
   `;
 
+  document.querySelectorAll('.followup-slot-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedFollowUpTime = btn.dataset.time;
+      document.querySelectorAll('.followup-slot-btn').forEach(item => {
+        item.classList.remove('selected');
+      });
+      btn.classList.add('selected');
+
+      const errTime = document.getElementById('err-followup-time');
+      if (errTime) errTime.classList.remove('visible');
+    });
+  });
+
   document.getElementById('followup-modal').classList.remove('hidden');
 }
 
 function confirmBooking() {
   const dateInput = document.getElementById('followup-confirm-date');
-  const errEl = document.getElementById('err-followup-date');
+  const errDate = document.getElementById('err-followup-date');
+  const errTime = document.getElementById('err-followup-time');
 
   if (!dateInput.value.trim()) {
     dateInput.classList.add('error');
-    errEl.textContent = 'Please enter a date.';
-    errEl.classList.add('visible');
+    errDate.textContent = 'Please select a date.';
+    errDate.classList.add('visible');
+    return;
+  }
+
+  dateInput.classList.remove('error');
+  errDate.classList.remove('visible');
+
+  if (!selectedFollowUpTime) {
+    errTime.textContent = 'Please select a time slot.';
+    errTime.classList.add('visible');
     return;
   }
 
@@ -133,9 +170,34 @@ function confirmBooking() {
   followUps = followUps.filter(f => f.id !== selectedFollowUpId);
   renderFollowUps(followUps);
   closeModal();
-  showToast('Follow-up appointment booked successfully!');
+  showToast(`Follow-up booked for ${formatInputDate(dateInput.value)} at ${selectedFollowUpTime}!`);
 }
 
 function closeModal() {
   document.getElementById('followup-modal').classList.add('hidden');
+  selectedFollowUpId = null;
+  selectedFollowUpTime = null;
+}
+
+function getFollowUpTimeSlots() {
+  return ['09:30 AM', '10:00 AM', '10:30 AM', '11:00 AM', '02:00 PM', '02:30 PM', '03:00 PM', '03:30 PM'];
+}
+
+function convertDisplayDateToInput(displayDate) {
+  const parsed = new Date(displayDate);
+  if (Number.isNaN(parsed.getTime())) return '';
+  const year = parsed.getFullYear();
+  const month = String(parsed.getMonth() + 1).padStart(2, '0');
+  const day = String(parsed.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function formatInputDate(inputDate) {
+  const parsed = new Date(`${inputDate}T00:00:00`);
+  if (Number.isNaN(parsed.getTime())) return inputDate;
+  return parsed.toLocaleDateString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  });
 }

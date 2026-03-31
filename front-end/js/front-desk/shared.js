@@ -10,7 +10,8 @@ const AppState = {
 };
 
 const STORAGE_KEYS = {
-  queue: 'medbits_frontdesk_queue'
+  queue: 'medbits_frontdesk_queue',
+  registrations: 'medbits_frontdesk_registrations'
 };
 
 // --- Load JSON data ---
@@ -82,6 +83,30 @@ function getStoredQueue() {
 
 function saveQueue(queueItems) {
   localStorage.setItem(STORAGE_KEYS.queue, JSON.stringify(queueItems));
+}
+
+function getStoredRegistrations() {
+  const raw = localStorage.getItem(STORAGE_KEYS.registrations);
+  return raw ? JSON.parse(raw) : [];
+}
+
+function saveRecentRegistration(patient) {
+  const registrations = getStoredRegistrations().filter(item => item.patientId !== patient.patientId);
+  registrations.unshift(patient);
+  localStorage.setItem(STORAGE_KEYS.registrations, JSON.stringify(registrations.slice(0, 20)));
+}
+
+function getRecentRegistrations(defaultPatients = []) {
+  const storedRegistrations = getStoredRegistrations();
+  const fallbackPatients = [...defaultPatients].reverse();
+  const seen = new Set();
+
+  return [...storedRegistrations, ...fallbackPatients].filter(patient => {
+    const key = patient.patientId || patient.id;
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 function getQueueItems() {

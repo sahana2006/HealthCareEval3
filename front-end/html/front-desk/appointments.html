@@ -139,7 +139,9 @@
           <div class="card" style="margin-top: var(--space-5)">
             <div class="section-header">
               <span class="section-title">Upcoming Consultations</span>
-              <button class="btn-view-all">View All</button>
+              <button class="btn-view-all" id="toggle-consultations-btn">
+                View All
+              </button>
             </div>
             <div id="upcoming-consultations" class="consultations-list"></div>
           </div>
@@ -307,7 +309,12 @@
     <div class="modal-overlay hidden" id="modify-modal">
       <div class="modal">
         <div class="modal-header">
-          <span class="modal-title">Modify Appointment</span>
+          <div>
+            <span class="modal-title">Modify Appointment</span>
+            <p class="modal-subtitle">
+              Update the appointment date and time for the selected patient.
+            </p>
+          </div>
           <button class="modal-close" id="close-modify-modal">
             <svg
               width="18"

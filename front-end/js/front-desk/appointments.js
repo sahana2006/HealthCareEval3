@@ -13,6 +13,8 @@ let selectedDate = null;
 let currentDateOffset = 0;
 let pendingCancelId = null;
 let appointments = [];
+let showAllConsultations = false;
+let activeModifyId = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
   renderShell('appointments');
@@ -34,6 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Render upcoming consultations
   renderUpcomingConsultations();
+  setupConsultationToggle();
 
   // Patient search
   setupPatientSearch();
@@ -82,9 +85,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Modal close handlers
   document.getElementById('close-modify-modal').addEventListener('click', () => {
     document.getElementById('modify-modal').classList.add('hidden');
+    activeModifyId = null;
   });
   document.getElementById('cancel-modify-btn').addEventListener('click', () => {
     document.getElementById('modify-modal').classList.add('hidden');
+    activeModifyId = null;
   });
   document.getElementById('close-cancel-modal').addEventListener('click', () => {
     document.getElementById('cancel-modal').classList.add('hidden');
@@ -102,8 +107,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
   document.getElementById('save-modify-btn').addEventListener('click', () => {
-    document.getElementById('modify-modal').classList.add('hidden');
-    showToast('Appointment updated successfully.');
+    saveModifiedAppointment();
   });
 });
 
@@ -129,13 +133,20 @@ function setupPatientSearch() {
     );
 
     if (!matches.length) {
-      results.innerHTML = '<div class="search-result-item"><div class="search-result-info"><span class="search-result-name">No patients found</span></div></div>';
+      results.innerHTML = `
+        <div class="search-result-item search-result-item-empty">
+          <div class="search-result-info">
+            <span class="search-result-name">No patients found</span>
+            <span class="search-result-meta">Try a phone number, patient ID, or full name.</span>
+          </div>
+        </div>
+      `;
     } else {
       results.innerHTML = matches.map(p => `
         <div class="search-result-item" data-id="${p.id}">
           <div class="search-result-info">
             <span class="search-result-name">${p.firstName} ${p.lastName}</span>
-            <span class="search-result-meta">${p.age}${p.gender[0]} &bull; ${p.phone}</span>
+            <span class="search-result-meta">${p.age} ${p.gender[0]} | ${p.phone}</span>
           </div>
           <span class="search-result-id">${p.patientId}</span>
         </div>
@@ -175,15 +186,22 @@ function showSelectedPatient(patient) {
 // --- Render Upcoming Consultations ---
 function renderUpcomingConsultations() {
   const container = document.getElementById('upcoming-consultations');
+  const toggleBtn = document.getElementById('toggle-consultations-btn');
   if (!appointments.length) {
     container.innerHTML = '<div class="empty-state"><p>No upcoming consultations</p></div>';
+    toggleBtn.classList.add('hidden');
     return;
   }
-  container.innerHTML = appointments.slice(0, 5).map(a => `
+
+  const visibleAppointments = showAllConsultations ? appointments : appointments.slice(0, 5);
+  toggleBtn.classList.toggle('hidden', appointments.length <= 5);
+  toggleBtn.textContent = showAllConsultations ? 'Show Less' : 'View All';
+
+  container.innerHTML = visibleAppointments.map(a => `
     <div class="consultation-item">
       <div class="consultation-info">
         <span class="consultation-patient">${a.patientName} - ${a.patientAge}${a.patientGender}</span>
-        <span class="consultation-meta">${a.doctorName} - ${a.time}</span>
+        <span class="consultation-meta">${formatAppointmentDate(a.date)} | ${a.doctorName} | ${a.time}</span>
       </div>
       <div class="consultation-actions">
         <button class="btn btn-modify btn-sm modify-btn" data-id="${a.id}">Modify</button>
@@ -198,6 +216,15 @@ function renderUpcomingConsultations() {
   });
   container.querySelectorAll('.cancel-btn').forEach(btn => {
     btn.addEventListener('click', () => openCancelModal(btn.dataset.id));
+  });
+}
+
+function setupConsultationToggle() {
+  const toggleBtn = document.getElementById('toggle-consultations-btn');
+  if (!toggleBtn) return;
+  toggleBtn.addEventListener('click', () => {
+    showAllConsultations = !showAllConsultations;
+    renderUpcomingConsultations();
   });
 }
 
@@ -373,23 +400,88 @@ function confirmAppointment() {
 function openModifyModal(id) {
   const appt = appointments.find(a => a.id === id);
   if (!appt) return;
+  activeModifyId = id;
   document.getElementById('modify-modal-body').innerHTML = `
-    <div style="background: var(--color-bg); border-radius: var(--radius-md); padding: var(--space-4); font-size:14px;">
-      <div style="margin-bottom: var(--space-3);">
-        <label class="form-label">Patient</label>
-        <input class="input-field" value="${appt.patientName}" readonly/>
+    <div class="modify-modal-content">
+      <div class="modify-hero">
+        <div class="modify-hero-copy">
+          <span class="badge badge-purple">Confirmed</span>
+          <h3>${appt.patientName}</h3>
+          <p>${appt.patientAge} years, ${expandGender(appt.patientGender)}, ${appt.specialty}</p>
+        </div>
+        <div class="modify-hero-meta">
+          <span>Doctor</span>
+          <strong>${appt.doctorName}</strong>
+        </div>
       </div>
-      <div style="margin-bottom: var(--space-3);">
-        <label class="form-label">Doctor</label>
-        <input class="input-field" value="${appt.doctorName}" readonly/>
+
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label class="form-label">Patient</label>
+          <input class="input-field" value="${appt.patientName}" readonly/>
+        </div>
+        <div class="form-group full-width">
+          <label class="form-label">Doctor</label>
+          <input class="input-field" value="${appt.doctorName}" readonly/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="modify-date">Date</label>
+          <input class="input-field" id="modify-date" type="date" value="${appt.date}" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="modify-time">Time</label>
+          <input class="input-field" id="modify-time" type="time" value="${convertTo24Hour(appt.time)}" />
+        </div>
       </div>
-      <div>
-        <label class="form-label">Time</label>
-        <input class="input-field" id="modify-time" value="${appt.time}"/>
+
+      <div class="modify-preview">
+        <span class="modify-preview-label">Updated visit summary</span>
+        <div id="modify-preview-text">${formatAppointmentDate(appt.date)} at ${appt.time}</div>
       </div>
     </div>
   `;
+  const dateInput = document.getElementById('modify-date');
+  const timeInput = document.getElementById('modify-time');
+  [dateInput, timeInput].forEach(input => {
+    input.addEventListener('input', updateModifyPreview);
+  });
+  updateModifyPreview();
   document.getElementById('modify-modal').classList.remove('hidden');
+}
+
+function updateModifyPreview() {
+  const preview = document.getElementById('modify-preview-text');
+  const dateInput = document.getElementById('modify-date');
+  const timeInput = document.getElementById('modify-time');
+  if (!preview || !dateInput || !timeInput) return;
+
+  const formattedDate = dateInput.value ? formatAppointmentDate(dateInput.value) : 'Select a date';
+  const formattedTime = timeInput.value ? convertTo12Hour(timeInput.value) : 'Select a time';
+  preview.textContent = `${formattedDate} at ${formattedTime}`;
+}
+
+function saveModifiedAppointment() {
+  if (!activeModifyId) return;
+  const dateInput = document.getElementById('modify-date');
+  const timeInput = document.getElementById('modify-time');
+  const newDate = dateInput?.value;
+  const newTime = timeInput?.value;
+
+  if (!newDate || !newTime) {
+    showToast('Please select both date and time.', 'error');
+    return;
+  }
+
+  const appt = appointments.find(item => item.id === activeModifyId);
+  if (!appt) return;
+
+  appt.date = newDate;
+  appt.time = convertTo12Hour(newTime);
+
+  renderUpcomingConsultations();
+  document.getElementById('modify-modal').classList.add('hidden');
+  activeModifyId = null;
+  showToast('Appointment updated successfully.');
 }
 
 // --- Cancel Modal ---
@@ -402,4 +494,40 @@ function openCancelModal(id) {
     ${appt.doctorName} — ${appt.time}
   `;
   document.getElementById('cancel-modal').classList.remove('hidden');
+}
+
+function formatAppointmentDate(dateStr) {
+  const date = new Date(`${dateStr}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return dateStr;
+  return date.toLocaleDateString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  });
+}
+
+function convertTo24Hour(time12) {
+  const match = time12?.match(/^(\d{1,2}):(\d{2})\s?(AM|PM)$/i);
+  if (!match) return '';
+  let [, hours, minutes, period] = match;
+  let hourNum = Number(hours);
+  if (period.toUpperCase() === 'PM' && hourNum !== 12) hourNum += 12;
+  if (period.toUpperCase() === 'AM' && hourNum === 12) hourNum = 0;
+  return `${String(hourNum).padStart(2, '0')}:${minutes}`;
+}
+
+function convertTo12Hour(time24) {
+  const match = time24?.match(/^(\d{2}):(\d{2})$/);
+  if (!match) return time24 || '';
+  let [, hours, minutes] = match;
+  let hourNum = Number(hours);
+  const period = hourNum >= 12 ? 'PM' : 'AM';
+  hourNum = hourNum % 12 || 12;
+  return `${String(hourNum).padStart(2, '0')}:${minutes} ${period}`;
+}
+
+function expandGender(genderShort) {
+  if (genderShort === 'M') return 'Male';
+  if (genderShort === 'F') return 'Female';
+  return genderShort || '';
 }

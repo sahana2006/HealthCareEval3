@@ -1,11 +1,16 @@
 /* ============================================================
-   WALKIN.CSS — Walk-in Registration styles
+   WALKIN.CSS - Walk-in Registration styles
    ============================================================ */
 
 .walkin-card {
   max-width: 840px;
   margin: 0 auto;
   position: relative;
+}
+
+.recent-registrations-card {
+  max-width: 840px;
+  margin: var(--space-6) auto 0;
 }
 
 .reg-form-title {
@@ -28,7 +33,6 @@
   border-radius: var(--radius-md);
 }
 
-/* Search Results Dropdown */
 .search-results {
   position: relative;
   background: var(--color-white);
@@ -85,7 +89,6 @@
   border-radius: var(--radius-full);
 }
 
-/* Modal success body */
 .modal-success-body {
   background: var(--color-primary-xlight);
   border-radius: var(--radius-md);
@@ -95,15 +98,57 @@
 .modal-success-row {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-4);
   font-size: 14px;
-  padding: 4px 0;
+  padding: 6px 0;
 }
 
 .modal-success-row span:first-child {
   color: var(--color-text-secondary);
+  min-width: 130px;
+  flex-shrink: 0;
 }
 
 .modal-success-row span:last-child {
   font-weight: 600;
   color: var(--color-text-primary);
+  flex: 1;
+  text-align: right;
+  word-break: break-word;
+}
+
+.recent-reg-list,
+.walkin-modal-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.recent-reg-entry,
+.modal-reg-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 12px var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+}
+
+.recent-reg-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-text-primary);
+}
+
+.recent-reg-meta {
+  margin-top: 3px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.walkin-modal {
+  width: min(620px, calc(100vw - 32px));
 }

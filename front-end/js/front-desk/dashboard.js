@@ -1,12 +1,10 @@
 /* ============================================================
-   DASHBOARD.JS — Dashboard page logic
+   DASHBOARD.JS - Dashboard page logic
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // Initialize shell (sidebar + topbar)
   renderShell('dashboard');
 
-  // Load data
   const data = await loadData();
   if (!data) {
     showToast('Failed to load data. Please refresh.', 'error');
@@ -16,18 +14,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   ensureQueueStore();
   const queueItems = getQueueItems();
   const activeQueueItems = queueItems.filter(item => item.status !== 'Completed');
-  const waitingItems = queueItems.filter(q => q.status === 'Waiting').slice(0, 4);
-  const consultItems = queueItems.filter(q => q.status === 'In Consultation').slice(0, 4);
+  const waitingItems = queueItems.filter(item => item.status === 'Waiting').slice(0, 4);
+  const consultItems = queueItems.filter(item => item.status === 'In Consultation').slice(0, 4);
 
-  // --- Render Stats ---
   document.getElementById('stat-walkins').textContent = data.dashboard.walkInsToday;
   document.getElementById('stat-appointments').textContent = data.dashboard.appointmentsToday;
   document.getElementById('stat-queue').textContent = activeQueueItems.length;
 
-  // --- Render Queue (Waiting) ---
   const waitingList = document.getElementById('queue-waiting-list');
-
-  if (waitingItems.length === 0) {
+  if (!waitingItems.length) {
     waitingList.innerHTML = '<div class="empty-state"><p>No patients waiting</p></div>';
   } else {
     waitingList.innerHTML = waitingItems.map(item => `
@@ -38,10 +33,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     `).join('');
   }
 
-  // --- Render Queue (In Consultation) ---
   const consultList = document.getElementById('queue-consulting-list');
-
-  if (consultItems.length === 0) {
+  if (!consultItems.length) {
     consultList.innerHTML = '<div class="empty-state"><p>No active consultations</p></div>';
   } else {
     consultList.innerHTML = consultItems.map(item => `
@@ -52,54 +45,4 @@ document.addEventListener('DOMContentLoaded', async () => {
       </div>
     `).join('');
   }
-
-  // --- Render Recent Registrations ---
-  const regList = document.getElementById('recent-registrations');
-  const recentPatient = data.patients[0];
-
-  regList.innerHTML = `
-    <div class="reg-item">
-      <div class="reg-item-row">
-        <span class="reg-item-label">Patient Name</span>
-        <span class="reg-item-value">${recentPatient.firstName} ${recentPatient.lastName}</span>
-      </div>
-      <div class="reg-item-row">
-        <span class="reg-item-label">Appointment id</span>
-        <span class="reg-item-value">${recentPatient.patientId}</span>
-      </div>
-      <div class="reg-item-row">
-        <span class="reg-item-label">Age &amp; Gender</span>
-        <span class="reg-item-value">${recentPatient.age} ${recentPatient.gender}</span>
-      </div>
-      <div class="reg-item-row">
-        <span class="reg-item-label">Phone Number</span>
-        <span class="reg-item-value">${recentPatient.phone}</span>
-      </div>
-    </div>
-  `;
-
-  // --- Render Recent Billing ---
-  const billingList = document.getElementById('recent-billing');
-  const recentBill = data.billings[0];
-
-  billingList.innerHTML = `
-    <div class="reg-item billing-item">
-      <div class="reg-item-row">
-        <span class="reg-item-label">Patient Name</span>
-        <span class="reg-item-value">${recentBill.patientName}</span>
-      </div>
-      <div class="reg-item-row">
-        <span class="reg-item-label">Appointment id</span>
-        <span class="reg-item-value">${recentBill.appointmentId}</span>
-      </div>
-      <div class="reg-item-row">
-        <span class="reg-item-label">Visit Type</span>
-        <span class="reg-item-value">${recentBill.visitType}</span>
-      </div>
-      <div class="reg-item-row">
-        <span class="reg-item-label">Amount Paid</span>
-        <span class="reg-item-value">${formatCurrency(recentBill.amount)}</span>
-      </div>
-    </div>
-  `;
 });
