@@ -32,7 +32,7 @@
     <!-- MAIN CONTENT -->
     <div class="main-content">
         
-        <div id="header-slot"></div>
+        <div id="header-slot"><h2 id="header-page-title">Front Desk Management</h2></div>
  
         <main class="content">
  
@@ -359,13 +359,21 @@ Promise.all([
     'frontdeskmanagement.html': 'frontdesk',
     'doctorleavemanagement.html': 'leave'
   };
+  const headerTitleMap = {
+    dashboard: 'Dashboard',
+    doctors: 'Doctor Management',
+    frontdesk: 'Frontdesk Management',
+    leave: 'Frontdesk Leave Management'
+  };
  
   const currentPage = location.pathname.split('/').pop().toLowerCase();
   const activeKey = pageMap[currentPage];
+  const headerTitle = document.getElementById('header-page-title');
  
   if (activeKey) {
     const activeLink = document.querySelector(`[data-nav="${activeKey}"]`);
     if (activeLink) activeLink.classList.add('active');
+    if (headerTitle) headerTitle.textContent = headerTitleMap[activeKey] || 'Dashboard';
   }
 
   const logoutLink = document.querySelector('[data-nav="logout"]');
@@ -381,6 +389,14 @@ Promise.all([
   lucide.createIcons();
 })
 .catch(err => console.error("Error loading components:", err));
+</script>
+<script>
+    const currentPage = window.location.pathname.split('/').pop();
+    document.querySelectorAll('.nav-item').forEach(item => {
+        if (item.getAttribute('href').includes(currentPage)) {
+            item.classList.add('active');
+        }
+    });
 </script>
 </body>
 </html>
