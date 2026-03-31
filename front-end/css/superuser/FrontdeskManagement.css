@@ -112,11 +112,11 @@ body {
     background-color: white;
     border: 2px solid #000;
     border-radius: 0.75rem;
-    padding: 0.75rem 1.25rem;
+    padding: 0.65rem 1.05rem;
     max-width: 600px;
 }
-.search-box i { width: 24px; height: 24px; color: #000; }
-.search-input { flex: 1; border: none; outline: none; font-size: 1rem; color: #000; background: transparent; }
+.search-box i { width: 21px; height: 21px; color: #000; }
+.search-input { flex: 1; border: none; outline: none; font-size: 0.9rem; color: #000; background: transparent; }
 .search-input::placeholder { color: #000; font-weight: 500; }
 
 /* Edit page search box (smaller) */
@@ -126,6 +126,7 @@ body {
     min-width: 300px;
     max-width: 400px;
 }
+.edit-search-box .search-input { font-size: 0.84rem; }
 .edit-search-box .search-input::placeholder { color: #6b7280; font-weight: 400; }
 
 /* ── Table ───────────────────────────────────────────────── */
@@ -135,14 +136,14 @@ body {
     padding: 2rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
-.table-title { font-size: 1.75rem; font-weight: bold; margin-bottom: 1.5rem; color: #000; }
+.table-title { font-size: 1.4rem; font-weight: bold; margin-bottom: 1.5rem; color: #000; }
 
 .staff-table { width: 100%; border-collapse: collapse; }
 .staff-table thead { background-color: #d1d5db; }
 .staff-table th {
     padding: 1rem;
     text-align: left;
-    font-size: 1rem;
+    font-size: 0.86rem;
     font-weight: 600;
     color: #000;
     border: 1px solid #9ca3af;
@@ -154,8 +155,8 @@ body {
 }
 .staff-table tbody tr:hover { background-color: #f9fafb; }
 .staff-table td {
-    padding: 1.25rem 1rem;
-    font-size: 1rem;
+    padding: 1.05rem 1rem;
+    font-size: 0.88rem;
     color: #000;
     border-left: 1px solid #9ca3af;
     border-right: 1px solid #9ca3af;
@@ -165,7 +166,7 @@ body {
 .view-all a {
     color: #000;
     text-decoration: underline;
-    font-size: 0.95rem;
+    font-size: 0.88rem;
     cursor: pointer;
     transition: color 0.3s;
     background: none;
@@ -197,15 +198,15 @@ body {
 }
 .back-btn i { width: 32px; height: 32px; color: #000; }
 .back-btn:hover i { color: #14b8a6; }
-.profile-title { font-size: 1.75rem; font-weight: bold; color: #000; }
+.profile-title { font-size: 1.4rem; font-weight: bold; color: #000; }
 
 .info-section {
-    background-color: #5eead4;
+    background: linear-gradient(135deg, #f0fdf4 0%, #d1fae5 100%);
     border-radius: 1.5rem;
     padding: 1.5rem 2rem;
     margin-bottom: 1.5rem;
 }
-.info-section-title { font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem; color: #000; }
+.info-section-title { font-size: 1.18rem; font-weight: bold; margin-bottom: 1.5rem; color: #000; }
 
 .info-grid {
     display: grid;
@@ -213,12 +214,12 @@ body {
     gap: 1.5rem 2rem;
 }
 .info-group { display: flex; flex-direction: column; }
-.info-group label { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; color: #000; }
+.info-group label { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem; color: #000; }
 .info-value {
-    padding: 0.75rem 1rem;
+    padding: 0.65rem 0.9rem;
     border: 2px solid #000;
     border-radius: 0.5rem;
-    font-size: 1rem;
+    font-size: 0.88rem;
     background-color: white;
     color: #000;
 }
@@ -230,7 +231,7 @@ body {
     padding: 2rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
-.form-title { font-size: 1.75rem; font-weight: bold; margin-bottom: 1.5rem; color: #000; }
+.form-title { font-size: 1.4rem; font-weight: bold; margin-bottom: 1.5rem; color: #000; }
 
 .form-header {
     display: flex;
@@ -245,12 +246,12 @@ body {
 
 /* ── Form Section ────────────────────────────────────────── */
 .form-section {
-    background-color: #5eead4;
+    background: linear-gradient(135deg, #f0fdf4 0%, #d1fae5 100%);
     border-radius: 1.5rem;
     padding: 1.5rem 2rem;
     margin-bottom: 1.5rem;
 }
-.form-section-title { font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem; color: #000; }
+.form-section-title { font-size: 1.18rem; font-weight: bold; margin-bottom: 1.5rem; color: #000; }
 
 .form-grid {
     display: grid;
@@ -258,12 +259,12 @@ body {
     gap: 1.5rem 2rem;
 }
 .form-group { display: flex; flex-direction: column; }
-.form-group label { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; color: #000; }
+.form-group label { font-size: 0.84rem; font-weight: 600; margin-bottom: 0.5rem; color: #000; }
 .form-group input {
-    padding: 0.75rem 1rem;
+    padding: 0.65rem 0.9rem;
     border: 2px solid #000;
     border-radius: 0.5rem;
-    font-size: 1rem;
+    font-size: 0.82rem;
     background-color: white;
     color: #000;
 }
@@ -287,16 +288,16 @@ body {
 
 /* ── fd_form_fields ──────────────────────────────────────── */
 .field-hint {
-    font-size: 0.78rem;
+    font-size: 0.62rem;
     color: #444;
     margin-top: 0.25rem;
     font-style: italic;
 }
 .form-select {
-    padding: 0.75rem 1rem;
+    padding: 0.65rem 0.9rem;
     border: 2px solid #000;
     border-radius: 0.5rem;
-    font-size: 1rem;
+    font-size: 0.82rem;
     background-color: white;
     color: #000;
     cursor: pointer;
@@ -310,10 +311,10 @@ body {
 .form-select:focus { outline: none; border-color: #0f766e; }
 
 input[type="date"] {
-    padding: 0.75rem 1rem;
+    padding: 0.65rem 0.9rem;
     border: 2px solid #000;
     border-radius: 0.5rem;
-    font-size: 1rem;
+    font-size: 0.82rem;
     background-color: white;
     color: #000;
     cursor: pointer;
@@ -325,10 +326,10 @@ input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
 input[type="time"] {
-    padding: 0.65rem 0.85rem;
+    padding: 0.55rem 0.75rem;
     border: 2px solid #000;
     border-radius: 0.5rem;
-    font-size: 1rem;
+    font-size: 0.8rem;
     background-color: white;
     color: #000;
     cursor: pointer;
@@ -343,15 +344,15 @@ input[type="time"]:focus { outline: none; border-color: #0f766e; }
     flex-wrap: wrap;
 }
 .time-input-wrap { display: flex; flex-direction: column; gap: 0.25rem; }
-.time-label { font-size: 0.78rem; font-weight: 600; color: #333; }
-.time-sep { font-size: 1rem; font-weight: 600; color: #000; margin-top: 1.2rem; }
+.time-label { font-size: 0.62rem; font-weight: 600; color: #333; }
+.time-sep { font-size: 0.76rem; font-weight: 600; color: #000; margin-top: 1.2rem; }
 
 .language-boxes { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; }
 .language-box {
-    padding: 0.65rem 1rem;
+    padding: 0.55rem 0.9rem;
     border: 2px solid #000;
     border-radius: 0.5rem;
-    font-size: 1rem;
+    font-size: 0.82rem;
     background: white;
     color: #000;
     width: 100%;
@@ -364,21 +365,21 @@ input.invalid, select.invalid { border-color: #dc2626 !important; background-col
 .lang-count-row { display: flex; align-items: center; gap: 0.75rem; }
 .lang-count-row input[type="number"] {
     width: 80px;
-    padding: 0.65rem 0.85rem;
+    padding: 0.55rem 0.75rem;
     border: 2px solid #000;
     border-radius: 0.5rem;
-    font-size: 1rem;
+    font-size: 0.8rem;
     background: white;
     color: #000;
     text-align: center;
 }
 .generate-btn {
-    padding: 0.6rem 1.2rem;
+    padding: 0.52rem 1rem;
     background: #0f766e;
     color: white;
     border: none;
     border-radius: 0.5rem;
-    font-size: 0.9rem;
+    font-size: 0.72rem;
     font-weight: 600;
     cursor: pointer;
     transition: background 0.2s;
