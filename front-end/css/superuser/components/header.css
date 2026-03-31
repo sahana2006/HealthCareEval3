@@ -11,7 +11,7 @@
 }
 
 .header-title h2 {
-    font-size: 1.75rem;
+    font-size: 1.25rem;
     font-weight: bold;
     color: #000;
     margin-bottom: 0.25rem;
@@ -80,7 +80,7 @@
 
 @media (max-width: 480px) {
     .header-title h2 {
-        font-size: 1.25rem;
+        font-size: 1.1rem;
     }
 
     .header-title p {

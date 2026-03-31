@@ -404,13 +404,21 @@ Promise.all([
     'frontdeskmanagement.html': 'frontdesk',
     'doctorleavemanagement.html': 'leave'
   };
+  const headerTitleMap = {
+    dashboard: 'Dashboard',
+    doctors: 'Doctor Management',
+    frontdesk: 'Frontdesk Management',
+    leave: 'Frontdesk Leave Management'
+  };
  
   const currentPage = location.pathname.split('/').pop().toLowerCase();
   const activeKey = pageMap[currentPage];
+  const headerTitle = document.getElementById('header-page-title');
  
   if (activeKey) {
     const activeLink = document.querySelector(`[data-nav="${activeKey}"]`);
     if (activeLink) activeLink.classList.add('active');
+    if (headerTitle) headerTitle.textContent = headerTitleMap[activeKey] || 'Dashboard';
   }
  
   // Load icons AFTER HTML injection
