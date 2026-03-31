@@ -412,6 +412,15 @@ Promise.all([
     const activeLink = document.querySelector(`[data-nav="${activeKey}"]`);
     if (activeLink) activeLink.classList.add('active');
   }
+
+  const logoutLink = document.querySelector('[data-nav="logout"]');
+  if (logoutLink) {
+    logoutLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      localStorage.removeItem('medbits_session');
+      window.location.replace('../login.html');
+    });
+  }
  
   // Load icons AFTER HTML injection
   lucide.createIcons();
